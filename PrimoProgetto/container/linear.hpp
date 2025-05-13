@@ -91,7 +91,7 @@ namespace lasd
         // Specific member function (inherited from PostOrderMappableContainer)
 
         inline void PostOrderMap(MapFun) override;
-    }
+    };
 
     /* ************************************************************************** */
 
