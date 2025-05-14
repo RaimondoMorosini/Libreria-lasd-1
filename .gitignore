@@ -1,3 +1,4 @@
 *.o
 PrimoProgetto/list/list_program
 PrimoProgetto/list/test_list
+PrimoProgetto/list/errori.txt
