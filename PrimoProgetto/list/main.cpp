@@ -3,7 +3,7 @@
 
 using namespace std;
 using namespace lasd;
-
+//g++ -o list_program main.cpp -std=c++11
 void printInt(const int& value) {
     std::cout << value << " ";
 }
