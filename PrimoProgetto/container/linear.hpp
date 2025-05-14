@@ -27,6 +27,8 @@ namespace lasd
         inline virtual const Data &Front() const; // deve lanciare std::length_error
         inline virtual const Data &Back() const; // deve lanciare std::length_error
 
+        
+
         /* ************************************************************************ */
         // Specific member function (inherited from TraversableContainer)
 
@@ -71,6 +73,11 @@ namespace lasd
         inline virtual Data &Front();// deve lanciare std::length_error
         inline virtual Data &Back();// deve lanciare std::length_error
 
+        // rende visibili anche le versioni const ereditate dei metodi operator[], Front e Back 
+        // necessario per evitare il warning: ‘const Data& LinearContainer<Data>::X() const’ was hidden [-Woverloaded-virtual]
+        using LinearContainer<Data>::operator[];
+        using LinearContainer<Data>::Front;
+        using LinearContainer<Data>::Back;
 
                /* ************************************************************************ */
 
