@@ -166,19 +166,19 @@ public:
 
   using typename TraversableContainer<Data>::TraverseFun;
 
-  void Traverse(TraverseFun) override; // Override TraversableContainer member
+  void Traverse(TraverseFun) const override; // Override TraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PreOrderTraversableContainer)
 
-  void PreOrderTraverse(TraverseFun) override; // Override PreOrderTraversableContainer member
+  void PreOrderTraverse(TraverseFun) const override; // Override PreOrderTraversableContainer member
 
   /* ************************************************************************ */
 
   // Specific member function (inherited from PostOrderTraversableContainer)
 
-  void PostOrderTraverse(TraverseFun) override; // Override PostOrderTraversableContainer member
+  void PostOrderTraverse(TraverseFun) const override; // Override PostOrderTraversableContainer member
 
   /* ************************************************************************ */
 

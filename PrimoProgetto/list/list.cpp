@@ -1,4 +1,3 @@
-#include "list.hpp"
 
 #include <stdexcept>
 
@@ -254,7 +253,7 @@ void List<Data>::PostOrderMap(MapFun func) {
 }
 
 template <typename Data>
-void List<Data>::Traverse(TraverseFun func) {
+void List<Data>::Traverse(TraverseFun func) const {
   Node* tmp = head;
   while (tmp != nullptr) {
     func(tmp->element);
@@ -263,12 +262,12 @@ void List<Data>::Traverse(TraverseFun func) {
 }
 
 template <typename Data>
-void List<Data>::PreOrderTraverse(TraverseFun func) {
+void List<Data>::PreOrderTraverse(TraverseFun func) const {
   Traverse(func);
 }
 
 template <typename Data>
-void List<Data>::PostOrderTraverse(TraverseFun func) {
+void List<Data>::PostOrderTraverse(TraverseFun func) const {
   std::function<void(Node*)> recurse = [&](Node* node) {
     if (node) {
       recurse(node->next);
