@@ -109,8 +109,8 @@ public:
   void  RemoveFromFront(); // (must throw std::length_error when empty)
   Data FrontNRemove(); // (must throw std::length_error when empty)
 
-  void InsertAtBack(const Data &) specifier; // Copy of the value
-  void InsertAtBack(Data &&) specifier; // Move of the value
+  void InsertAtBack(const Data &); // Copy of the value
+  void InsertAtBack(Data &&); // Move of the value
   void RemoveFromBack(); // (must throw std::length_error when empty)
   Data BackNRemove(); // (must throw std::length_error when empty)
 
