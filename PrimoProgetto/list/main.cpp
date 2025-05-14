@@ -3,7 +3,9 @@
 
 using namespace std;
 using namespace lasd;
-//g++ -o list_program main.cpp -std=c++11
+/*
+g++-13 -Wall -pedantic -O3 -std=c++20 -fsanitize=address -o test_list main.cpp && ./test_list
+*/
 void printInt(const int& value) {
     std::cout << value << " ";
 }
