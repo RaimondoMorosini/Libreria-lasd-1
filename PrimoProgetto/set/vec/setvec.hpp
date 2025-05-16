@@ -116,6 +116,18 @@ public:
 protected:
 
   // Auxiliary functions, if necessary!
+  //resize helper
+  void Resize(ulong newCap); // Resize the vector to a new capacity
+
+  //Binary search helper
+  ulong LowerBoundIndex(const Data& val) const; // Find the index of a value using binary search
+
+  bool needResize() const noexcept; // Check if resizing is needed
+  void ResizeIfNeeded(); // Resize the vector if needed
+
+  //Shift helper
+  void ShiftLeft(ulong start, ulong end); // Shift elements to the left
+  void ShiftRight(ulong start, ulong end); // Shift elements to the right
 
 };
 
@@ -123,6 +135,6 @@ protected:
 
 }
 
-#include "setvec.cpp"
+#include "setvec.tpp"
 
 #endif
