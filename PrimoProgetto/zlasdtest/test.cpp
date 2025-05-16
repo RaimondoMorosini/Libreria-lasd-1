@@ -21,7 +21,7 @@ void lasdtest() {
   stestnum += loctestnum; stesterr += loctesterr;
 
   loctestnum = 0; loctesterr = 0;
- // testSimpleExercise1B(loctestnum, loctesterr);
+  testSimpleExercise1B(loctestnum, loctesterr);
   stestnum += loctestnum; stesterr += loctesterr;
 
   cout << endl << "Exercise 1 (Simple Test) (Errors/Tests: " << stesterr << "/" << stestnum << ")";
