@@ -134,10 +134,7 @@ void RunListTests() {
   for (int i = 0; i < 5; ++i)
     list.InsertAtBack(MakeValue<T>(i));
 
-  int sum = 0;
-  list.Traverse([&](const T& val) {
-    sum += static_cast<int>(val.id); // compatibile solo con MyObject o int
-  });
+
 
   // Map (esempio generico)
   list.Map([](T& val) {
