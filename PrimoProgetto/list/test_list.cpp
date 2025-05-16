@@ -2,7 +2,7 @@
 #include <string>
 #include <stdexcept>
 #include <cassert>
-#include "list.hpp"  // Assumendo che list.hpp includa anche list.cpp
+#include "list.hpp"  
 using namespace lasd;
 
 // ===== Helper macro per asserzioni semplici =====
