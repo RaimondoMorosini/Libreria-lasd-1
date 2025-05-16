@@ -1,15 +1,29 @@
+# === Variabili ===
 TARGET = test_list
 SRCS = test_list.cpp
 CXX = g++-13
-OPTIMIZATION = -O3
-CXXFLAGS = -Wall -pedantic -std=c++20 -fsanitize=address 
 
-all: $(TARGET)
+# Flag comuni
+CXXFLAGS = -Wall -pedantic -std=c++20
+
+# Build "normale" (con sanitizzatore, ottimizzazione)
+RELEASE_FLAGS = -O3 -fsanitize=address
+
+# Build "debug" (niente ottimizzazione, no sanitizzatore)
+DEBUG_FLAGS = -g -O0
+
+# === Target principale ===
+all: release
+
+release: $(TARGET)
 
 $(TARGET): $(SRCS)
-	$(CXX) $(CXXFLAGS) $(OPTIMIZATION) -o $@ $^
+	$(CXX) $(CXXFLAGS) $(RELEASE_FLAGS) -o $@ $^
 
-clean:
-	rm -f $(TARGET)
+# === Build in debug ===
 debug:
-	$(CXX) $(CXXFLAGS) -g -o $(TARGET) $(SRCS)
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o $(TARGET)_debug $(SRCS)
+
+# === Pulizia ===
+clean:
+	rm -f $(TARGET) $(TARGET)_debug
