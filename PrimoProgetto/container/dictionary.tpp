@@ -1,5 +1,6 @@
 
-namespace lasd {
+// The implementations are already included inside the lasd namespace from dictionary.hpp,
+// so we should not redeclare the namespace here
 
 /* ************************************************************************** */
 
@@ -124,5 +125,3 @@ void OrderedDictionaryContainer<Data>::RemoveSuccessor(const Data & dato) {
 }
 
 /* ************************************************************************** */
-
-}

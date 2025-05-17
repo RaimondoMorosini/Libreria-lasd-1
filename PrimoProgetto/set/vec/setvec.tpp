@@ -10,9 +10,11 @@ namespace lasd {
 // Costruttore da TraversableContainer
 template <typename Data>
 SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
-  for (const auto& elem : con) {
-    Insert(elem);
-  }
+  con.Traverse(
+    [this](const Data& elem) {
+      Insert(elem);
+    }
+  );
 }
 
 // Costruttore da MappableContainer (rvalue)

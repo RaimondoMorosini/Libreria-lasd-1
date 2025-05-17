@@ -78,6 +78,8 @@ namespace lasd
         virtual void RemoveSuccessor(const Data &);  // (concrete function must throw std::length_error when not found)
     };
 
-#include "dictionary.cpp"
+} // Close namespace lasd
+
+#include "dictionary.tpp"
 
 #endif
