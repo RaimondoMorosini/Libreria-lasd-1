@@ -3,7 +3,10 @@
 #include <stdexcept>
 #include <cassert>
 #include <typeinfo>  // Necessario per typeid
+#include <random>    // Per i test con numeri casuali
 #include "setvec.hpp"
+#include <set>       // Per std::set nei test con valori unici
+
 
 using namespace lasd;
 
@@ -97,7 +100,7 @@ void RunSetVecTests() {
   ASSERT_EQ(set.SuccessorNRemove(MakeValue<T>(10)), MakeValue<T>(30));
   ASSERT_FALSE(set.Exists(MakeValue<T>(30)));
 
-  // Eccezioni: Min() su set vuoto
+  // Eccezioni: Min/Max/Predecessor/Successor su set vuoto
   set.Clear();
   ASSERT_THROW(set.Min(), std::length_error);
   ASSERT_THROW(set.Max(), std::length_error);
@@ -142,6 +145,74 @@ void RunSetVecTests() {
   // Clear
   a.Clear();
   ASSERT_TRUE(a.Empty());
+
+  // Inserimento tramite std::move
+  {
+    T val = MakeValue<T>(99);
+    ASSERT_TRUE(set.Insert(std::move(val)));
+    ASSERT_TRUE(set.Exists(MakeValue<T>(99)));
+  }
+
+  // Move effettivo: l'oggetto sorgente deve risultare svuotato
+  {
+    SetVec<T> temp;
+    temp.Insert(MakeValue<T>(1));
+    temp.Insert(MakeValue<T>(2));
+    SetVec<T> moved2 = std::move(temp);
+    ASSERT_EQ(moved2.Size(), 2);
+    ASSERT_TRUE(moved2.Exists(MakeValue<T>(1)));
+    ASSERT_TRUE(moved2.Exists(MakeValue<T>(2)));
+    ASSERT_TRUE(temp.Empty());
+  }
+
+  // Eccezioni realistiche di Predecessor/Successor
+  {
+    set.Clear();
+    set.Insert(MakeValue<T>(10));
+    set.Insert(MakeValue<T>(20));
+    ASSERT_THROW(set.Predecessor(MakeValue<T>(10)), std::length_error);
+    ASSERT_THROW(set.Successor(MakeValue<T>(20)), std::length_error);
+  }
+
+  // Verifica ordine logico interno (ordinamento)
+  {
+    set.Clear();
+    set.Insert(MakeValue<T>(3));
+    set.Insert(MakeValue<T>(1));
+    set.Insert(MakeValue<T>(2));
+    ASSERT_EQ(set[0], MakeValue<T>(1));
+    ASSERT_EQ(set[1], MakeValue<T>(2));
+    ASSERT_EQ(set[2], MakeValue<T>(3));
+  }
+
+  // Inserimento massivo di valori randomici
+  {
+    set.Clear();
+    std::mt19937 gen(42); // seme fisso
+    std::uniform_int_distribution<int> dist(0, 10000);
+    std::set<T> uniqueValues;
+
+    for (int i = 0; i < 500; ++i) {
+      T val = MakeValue<T>(dist(gen));
+      uniqueValues.insert(val);
+      set.Insert(val); // Se duplicato, il set lo rifiuta (come atteso)
+    }
+
+    ASSERT_EQ(set.Size(), uniqueValues.size());
+  }
+
+  // Costruttore da TraversableContainer
+  {
+    Vector<T> vec;
+    vec.Resize(3);
+    vec[0] = MakeValue<T>(1);
+    vec[1] = MakeValue<T>(2);
+    vec[2] = MakeValue<T>(3);
+
+    SetVec<T> fromVec(vec);
+    ASSERT_EQ(fromVec.Size(), 3);
+    ASSERT_TRUE(fromVec.Exists(MakeValue<T>(2)));
+  }
 
   std::cout << "All SetVec tests passed for type: " << typeid(T).name() << "\n";
 }
