@@ -60,10 +60,10 @@ namespace lasd
         bool operator!=(const OrderedDictionaryContainer &) const noexcept = delete;
 
         // Specific member functions
-        virtual const Data &Min() const  = 0;;                     // (concrete function must throw std::length_error when empty)
-        virtual const Data &Max() const = 0;;                     // (concrete function must throw std::length_error when empty)
-        virtual const Data &Predecessor(const Data &) const= 0;; // (concrete function must throw std::length_error when not found)
-        virtual const Data &Successor(const Data &) const= 0;;   // (concrete function must throw std::length_error when not found)
+        virtual const Data &Min() const  = 0;                     // (concrete function must throw std::length_error when empty)
+        virtual const Data &Max() const = 0;                     // (concrete function must throw std::length_error when empty)
+        virtual const Data &Predecessor(const Data &) const= 0; // (concrete function must throw std::length_error when not found)
+        virtual const Data &Successor(const Data &) const= 0;  // (concrete function must throw std::length_error when not found)
 
         virtual Data MinNRemove(); // (concrete function must throw std::length_error when empty)
         virtual void RemoveMin();  // (concrete function must throw std::length_error when empty)
