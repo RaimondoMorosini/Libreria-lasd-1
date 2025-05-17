@@ -29,8 +29,9 @@ SetVec<Data>::SetVec(MappableContainer<Data>&& con) {
 template <typename Data>
 SetVec<Data>::SetVec(const SetVec<Data>& other)
   : vec(other.vec), head(other.head), tail(other.tail) {
-  size = other.size;
+  this->size = other.size;
 }
+
 
 // Move constructor TODO VEDERE SE FUNZIONA
 template <typename Data>
@@ -259,3 +260,5 @@ void SetVec<Data>::RemoveSuccessor(const Data& val) {
 }
 
 } // namespace lasd
+
+#endif // SETVEC_TPP
