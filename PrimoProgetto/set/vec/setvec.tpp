@@ -87,6 +87,7 @@ void SetVec<Data>::Resize(ulong newCap) {
     //TODO: Implementare Resize
 }
 
+template <typename Data>
 ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
   ulong low = 0;
   ulong high = size;
@@ -101,7 +102,12 @@ ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
   return low;
 }
 
-//TODO : Implementare LowerBoundIndex e vedere se funziona
+// Operator[] non-const implementation for internal use
+template <typename Data>
+Data& SetVec<Data>::operator[](ulong index) {
+  if (index >= size) throw std::out_of_range("Index out of bounds");
+  return vec[(head + index) % vec.Size()];
+}
 // Inserimento ordinato
 template <typename Data>
 bool SetVec<Data>::Insert(const Data& val) {
@@ -148,7 +154,32 @@ bool SetVec<Data>::Insert(Data&& val) {
 // Remove
 template <typename Data>
 bool SetVec<Data>::Remove(const Data& val) {
-//TODO : Implementare Remove
+  // Find the element's index
+  ulong i = 0;
+  bool found = false;
+
+  // Search for the element
+  while (i < size && !found) {
+    if ((*this)[i] == val) {
+      found = true;
+    } else {
+      ++i;
+    }
+  }
+
+  // If element not found, return false
+  if (!found) return false;
+
+  // Shift elements left by one position
+  for (ulong j = i; j < size - 1; ++j) {
+    (*this)[j] = std::move((*this)[j + 1]);
+  }
+
+  // Decrement size and update tail
+  --size;
+  tail = (head + size) % vec.Size();
+  
+  return true;
 }
 
 // operator[]
@@ -163,7 +194,12 @@ const Data& SetVec<Data>::operator[](ulong index) const {
 // Exists
 template <typename Data>
 bool SetVec<Data>::Exists(const Data& val) const noexcept {
-  //TODO : Implementare Exists by LowerBoundIndex
+  if (size == 0) return false;
+  
+  ulong index = LowerBoundIndex(val);
+  
+  // Check if index is valid and the element at index equals val
+  return (index < size && !(val < (*this)[index]) && !((*this)[index] < val));
 }
 
 // Clear
@@ -193,7 +229,15 @@ Data SetVec<Data>::MinNRemove() {
 template <typename Data>
 void SetVec<Data>::RemoveMin() {
   if (size == 0) throw std::length_error("Empty container");
-  //TODO : Implementare RemoveMin by Remove 
+  
+  // Shift all elements one position left
+  for (ulong i = 0; i < size - 1; ++i) {
+    (*this)[i] = std::move((*this)[i + 1]);
+  }
+  
+  // Update size and tail
+  --size;
+  tail = (head + size) % vec.Size();
 }
 
 template <typename Data>
@@ -214,7 +258,6 @@ void SetVec<Data>::RemoveMax() {
   if (size == 0) throw std::length_error("Empty container");
   --size;
   tail = (head + size) % vec.Size();
-  //TODO : Implementare RemoveMax by Remove cosi da poter fare i controlli per il resize
 }
 
 /* ************************************************************************ */
@@ -223,8 +266,23 @@ void SetVec<Data>::RemoveMax() {
 template <typename Data>
 const Data& SetVec<Data>::Predecessor(const Data& val) const {
   if (size < 2) throw std::length_error("No predecessor");
-  //TODO : Implementare Predecessor by LowerBoundIndex
-  throw std::length_error("Predecessor not found");
+  
+  // Find lower bound index
+  ulong index = LowerBoundIndex(val);
+  
+  // If index is 0 or val is not found, there's no predecessor
+  if (index == 0 || (index < size && !((*this)[index] < val) && !(val < (*this)[index]))) {
+    if (index == 0) throw std::length_error("No predecessor");
+    index--;
+  } else {
+    // Index is already pointing to predecessor
+    index--;
+  }
+  
+  // If we reach here, index should be pointing to predecessor
+  if (index >= size) throw std::length_error("Predecessor not found");
+  
+  return (*this)[index];
 }
 
 template <typename Data>
@@ -243,9 +301,14 @@ void SetVec<Data>::RemovePredecessor(const Data& val) {
 template <typename Data>
 const Data& SetVec<Data>::Successor(const Data& val) const {
   if (size < 2) throw std::length_error("No successor");
-    //TODO : Implementare Successor by LowerBoundIndex
-  throw std::length_error("Successor not found");
-}
+  
+  // Find lower bound index
+  ulong index = LowerBoundIndex(val);
+  
+  // If val exists in the set, get the next element
+  if (index < size && !((*this)[index] < val) && !(val < (*this)[index])) {
+    index++;
+  }
 
 template <typename Data>
 Data SetVec<Data>::SuccessorNRemove(const Data& val) {
