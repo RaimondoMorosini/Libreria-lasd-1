@@ -10,6 +10,9 @@ namespace lasd {
 // Costruttore da TraversableContainer
 template <typename Data>
 SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
+  // Initialize vector with some initial capacity
+  vec = Vector<Data>(4);  // Start with a reasonable size
+  
   con.Traverse(
     [this](const Data& elem) {
       Insert(elem);
@@ -86,7 +89,24 @@ inline bool SetVec<Data>::operator!=(const SetVec<Data>& other) const noexcept {
 // Resize helper
 template <typename Data>
 void SetVec<Data>::Resize(ulong newCap) {
-    //TODO: Implementare Resize
+    if (newCap == 0) {
+        Vector<Data> temp;
+        std::swap(vec, temp);
+        head = tail = size = 0;
+        return;
+    }
+
+    Vector<Data> temp(newCap);
+    
+    // Copy existing elements
+    for (ulong i = 0; i < size; i++) {
+        temp[i] = vec[(head + i) % vec.Size()];
+    }
+    
+    // Update vector and indices
+    std::swap(vec, temp);
+    head = 0;
+    tail = size;
 }
 
 template <typename Data>
@@ -115,20 +135,24 @@ template <typename Data>
 bool SetVec<Data>::Insert(const Data& val) {
   if (Exists(val)) return false;
 
-  if (size == vec.Size())
+  // Check if resize is needed
+  if (size >= vec.Size()) {
     Resize(vec.Size() == 0 ? 1 : vec.Size() * 2);
+  }
 
-  ulong i = 0;
-  while (i < size && (*this)[i] < val)
-    ++i;
+  // Find insertion point
+  ulong pos = LowerBoundIndex(val);
 
-  // Shift elements right from tail to i
-  for (ulong j = size; j > i; --j)
-    (*this)[j] = std::move((*this)[j - 1]);
+  // Shift elements to make space
+  for (ulong i = size; i > pos; --i) {
+    vec[(head + i) % vec.Size()] = std::move(vec[(head + i - 1) % vec.Size()]);
+  }
 
-  (*this)[i] = val;
+  // Insert the new element
+  vec[(head + pos) % vec.Size()] = val;
   ++size;
   tail = (head + size) % vec.Size();
+  
   return true;
 }
 
@@ -137,17 +161,24 @@ template <typename Data>
 bool SetVec<Data>::Insert(Data&& val) {
   if (Exists(val)) return false;
 
-  if (size == vec.Size())
+  // Ensure we have space
+  if (size == vec.Size()) {
     Resize(vec.Size() == 0 ? 1 : vec.Size() * 2);
+  }
 
+  // Find insertion point using direct vector access
   ulong i = 0;
-  while (i < size && (*this)[i] < val)
+  while (i < size && vec[(head + i) % vec.Size()] < val) {
     ++i;
+  }
 
-  for (ulong j = size; j > i; --j)
-    (*this)[j] = std::move((*this)[j - 1]);
+  // Shift elements to make space
+  for (ulong j = size; j > i; --j) {
+    vec[(head + j) % vec.Size()] = std::move(vec[(head + j - 1) % vec.Size()]);
+  }
 
-  (*this)[i] = std::move(val);
+  // Insert the new element
+  vec[(head + i) % vec.Size()] = std::move(val);
   ++size;
   tail = (head + size) % vec.Size();
   return true;
@@ -187,9 +218,12 @@ bool SetVec<Data>::Remove(const Data& val) {
 // operator[]
 template <typename Data>
 const Data& SetVec<Data>::operator[](ulong index) const {
-  if (index >= size) throw std::out_of_range("Index out of bounds");
+  if (index >= size) {
+    throw std::out_of_range("Index out of bounds");
+  }
   return vec[(head + index) % vec.Size()];
 }
+
 
 /* ************************************************************************ */
 
