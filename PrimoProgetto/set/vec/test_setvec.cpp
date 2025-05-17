@@ -2,6 +2,7 @@
 #include <string>
 #include <stdexcept>
 #include <cassert>
+#include <typeinfo>  // Necessario per typeid
 #include "setvec.hpp"
 
 using namespace lasd;
@@ -96,7 +97,8 @@ void RunSetVecTests() {
   ASSERT_EQ(set.SuccessorNRemove(MakeValue<T>(10)), MakeValue<T>(30));
   ASSERT_FALSE(set.Exists(MakeValue<T>(30)));
 
-  // Out of bounds
+  // Eccezioni: Min() su set vuoto
+  set.Clear();
   ASSERT_THROW(set.Min(), std::length_error);
   ASSERT_THROW(set.Max(), std::length_error);
   ASSERT_THROW(set.Predecessor(MakeValue<T>(10)), std::length_error);

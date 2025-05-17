@@ -210,7 +210,13 @@ bool SetVec<Data>::Remove(const Data& val) {
 
   // Decrement size and update tail
   --size;
-  tail = (head + size) % vec.Size();
+  
+  // Special case: if the container becomes empty, reset head and tail
+  if (size == 0) {
+    head = tail = 0;
+  } else {
+    tail = (head + size) % vec.Size();
+  }
   
   return true;
 }
@@ -273,7 +279,13 @@ void SetVec<Data>::RemoveMin() {
   
   // Update size and tail
   --size;
-  tail = (head + size) % vec.Size();
+  
+  // Special case: if the container becomes empty, reset head and tail
+  if (size == 0) {
+    head = tail = 0;
+  } else {
+    tail = (head + size) % vec.Size();
+  }
 }
 
 template <typename Data>
@@ -293,7 +305,13 @@ template <typename Data>
 void SetVec<Data>::RemoveMax() {
   if (size == 0) throw std::length_error("Empty container");
   --size;
-  tail = (head + size) % vec.Size();
+  
+  // Special case: if the container becomes empty, reset head and tail
+  if (size == 0) {
+    head = tail = 0;
+  } else {
+    tail = (head + size) % vec.Size();
+  }
 }
 
 /* ************************************************************************ */
@@ -324,7 +342,10 @@ const Data& SetVec<Data>::Predecessor(const Data& val) const {
 template <typename Data>
 Data SetVec<Data>::PredecessorNRemove(const Data& val) {
   Data tmp = Predecessor(val);
+  
+  // Remove the element and get the result
   Remove(tmp);
+  
   return tmp;
 }
 
@@ -355,7 +376,13 @@ const Data& SetVec<Data>::Successor(const Data& val) const {
 template <typename Data>
 Data SetVec<Data>::SuccessorNRemove(const Data& val) {
   Data tmp = Successor(val);
+  
+  // First remove the original element (val)
+  Remove(val);
+  
+  // Then remove the successor and get the result 
   Remove(tmp);
+  
   return tmp;
 }
 
