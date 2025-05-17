@@ -1,3 +1,9 @@
+/*
+risolti questi errori:
+error: ‘out_of_range’ is not a member of ‘std’
+error: ‘to_string’ is not a member of ‘std’
+error: ‘length_error’ is not a member of ‘std’
+*/
 
 namespace lasd {
 
