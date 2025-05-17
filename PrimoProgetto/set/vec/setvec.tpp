@@ -30,7 +30,7 @@ SetVec<Data>::SetVec(MappableContainer<Data>&& con) {
   );
 }
 
-// Copy constructor TODO VEDERE SE FUNZIONA
+// Copy constructor 
 template <typename Data>
 SetVec<Data>::SetVec(const SetVec<Data>& other)
   : vec(other.vec), head(other.head), tail(other.tail) {
@@ -38,7 +38,7 @@ SetVec<Data>::SetVec(const SetVec<Data>& other)
 }
 
 
-// Move constructor TODO VEDERE SE FUNZIONA
+// Move constructor 
 template <typename Data>
 SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept
   : vec(std::move(other.vec)), head(other.head), tail(other.tail) {
@@ -124,7 +124,7 @@ ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
   return low;
 }
 
-// Operator[] non-const implementation for internal use
+// Operator[]
 template <typename Data>
 Data& SetVec<Data>::operator[](ulong index) {
   if (index >= size) throw std::out_of_range("Index out of bounds");
@@ -133,7 +133,7 @@ Data& SetVec<Data>::operator[](ulong index) {
 // Inserimento ordinato
 template <typename Data>
 bool SetVec<Data>::Insert(const Data& val) {
-  if (Exists(val)) return false;
+  if (Exists(val)) return false; //TODO migliorare efficienza unendo il controllo di esistenza con la ricerca della posizione
 
   // Check if resize is needed
   if (size >= vec.Size()) {
@@ -143,7 +143,7 @@ bool SetVec<Data>::Insert(const Data& val) {
   // Find insertion point
   ulong pos = LowerBoundIndex(val);
 
-  // Shift elements to make space
+  // Shift elements to make space TODO milgiorare efficenza decidento in quale direzione shiftare
   for (ulong i = size; i > pos; --i) {
     vec[(head + i) % vec.Size()] = std::move(vec[(head + i - 1) % vec.Size()]);
   }
