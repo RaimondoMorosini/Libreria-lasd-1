@@ -10,7 +10,7 @@ namespace lasd {
 // Costruttore da TraversableContainer
 template <typename Data>
 SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
-  for (const Data& elem : con) {
+  for (const auto& elem : con) {
     Insert(elem);
   }
 }
@@ -309,6 +309,12 @@ const Data& SetVec<Data>::Successor(const Data& val) const {
   if (index < size && !((*this)[index] < val) && !(val < (*this)[index])) {
     index++;
   }
+  
+  // Check if successor exists
+  if (index >= size) throw std::length_error("No successor");
+  
+  return (*this)[index];
+}
 
 template <typename Data>
 Data SetVec<Data>::SuccessorNRemove(const Data& val) {

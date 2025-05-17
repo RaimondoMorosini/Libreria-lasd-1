@@ -78,49 +78,49 @@ inline bool DictionaryContainer<Data>::RemoveSome(const TraversableContainer<Dat
 template<typename Data>
 Data OrderedDictionaryContainer<Data>::MinNRemove() {
   Data dato = Min();
-  Remove(dato);
+  this->Remove(dato);
   return dato;
 }
 
 template<typename Data>
 void OrderedDictionaryContainer<Data>::RemoveMin() {
-  Remove(Min());
+  this->Remove(Min());
 }
 
 template<typename Data>
 Data OrderedDictionaryContainer<Data>::MaxNRemove() {
   Data dato = Max();
-  Remove(dato);
+  this->Remove(dato);
   return dato;
 }
 
 template<typename Data>
 void OrderedDictionaryContainer<Data>::RemoveMax() {
-  Remove(Max());
+  this->Remove(Max());
 }
 
 template<typename Data>
 Data OrderedDictionaryContainer<Data>::PredecessorNRemove(const Data & dato) {
   Data predecessore = Predecessor(dato);
-  Remove(predecessore);
+  this->Remove(predecessore);
   return predecessore;
 }
 
 template<typename Data>
 void OrderedDictionaryContainer<Data>::RemovePredecessor(const Data & dato) {
-  Remove(Predecessor(dato));
+  this->Remove(Predecessor(dato));
 }
 
 template<typename Data>
 Data OrderedDictionaryContainer<Data>::SuccessorNRemove(const Data & dato) {
   Data successore = Successor(dato);
-  Remove(successore);
+  this->Remove(successore);
   return successore;
 }
 
 template<typename Data>
 void OrderedDictionaryContainer<Data>::RemoveSuccessor(const Data & dato) {
-  Remove(Successor(dato));
+  this->Remove(Successor(dato));
 }
 
 /* ************************************************************************** */
