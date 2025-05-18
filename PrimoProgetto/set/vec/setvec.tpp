@@ -319,7 +319,7 @@ void SetVec<Data>::RemoveMax() {
 // Predecessor
 template <typename Data>
 const Data& SetVec<Data>::Predecessor(const Data& val) const {
-  if (size < 2) throw std::length_error("No predecessor");
+  if (size < 1) throw std::length_error("No predecessor");
   
   // Find lower bound index
   ulong index = LowerBoundIndex(val);
@@ -357,7 +357,7 @@ void SetVec<Data>::RemovePredecessor(const Data& val) {
 // Successor
 template <typename Data>
 const Data& SetVec<Data>::Successor(const Data& val) const {
-  if (size < 2) throw std::length_error("No successor");
+  if (size < 1) throw std::length_error("No successor");
   
   // Find lower bound index
   ulong index = LowerBoundIndex(val);
