@@ -113,6 +113,15 @@ public:
 
   void Clear() override; // Override ClearableContainer member
 
+    /* ************************************************************************ */
+// Disabilita inserimento non ordinato ereditato da List 
+//TODO CHIEDERE SE DISABILITARE o Implementare una versione che mantenga l'ordinamento
+void InsertAtFront(const Data&) override;
+void InsertAtFront(Data&&) override;
+
+void InsertAtBack(const Data&) override;
+void InsertAtBack(Data&&) override;
+
 protected:
 
   // Auxiliary functions, if necessary!
