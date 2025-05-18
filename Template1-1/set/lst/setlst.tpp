@@ -8,39 +8,37 @@
 
 namespace lasd {
 
-/* ************************************************************************ */
+/* ************************************************************************** */
 
-// Costruttore da TraversableContainer
+// Costruttore da TraversableContainer (eredita da List<Data>)
 template <typename Data>
 SetLst<Data>::SetLst(const TraversableContainer<Data>& con) {
-  std::vector<Data> tmp;
-  tmp.reserve(con.Size());
-  con.Traverse([&tmp](const Data& d) {
-    tmp.push_back(d);
-  });
-  std::sort(tmp.begin(), tmp.end());
-  tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
-  for (const Data& d : tmp) {
-    List<Data>::InsertAtBack(d);
-    ++size;
+  SortableVector<Data> tempVec(con); // Copia gli elementi
+  tempVec.Sort(); // Ordina il vettore
+
+  for (ulong i = 0; i < tempVec.Size(); ++i) {
+    if (i == 0 || !(tempVec[i] == tempVec[i - 1])) {
+      List<Data>::InsertAtBack(tempVec[i]);
+      ++size;
+    }
   }
 }
 
-// Costruttore da MappableContainer
+// Costruttore da MappableContainer (rvalue)
 template <typename Data>
 SetLst<Data>::SetLst(MappableContainer<Data>&& con) {
-  std::vector<Data> tmp;
-  tmp.reserve(con.Size());
-  con.Map([&tmp](Data&& d) {
-    tmp.push_back(std::move(d));
-  });
-  std::sort(tmp.begin(), tmp.end());
-  tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
-  for (Data& d : tmp) {
-    List<Data>::InsertAtBack(std::move(d));
-    ++size;
+  SortableVector<Data> tempVec(std::move(con)); // Muove gli elementi
+  tempVec.Sort(); // Ordina il vettore
+
+  for (ulong i = 0; i < tempVec.Size(); ++i) {
+    if (i == 0 || !(tempVec[i] == tempVec[i - 1])) {
+      List<Data>::InsertAtBack(std::move(tempVec[i]));
+      ++size;
+    }
   }
 }
+
+/* ************************************************************************** */s
 
 // Copy constructor
 template <typename Data>
