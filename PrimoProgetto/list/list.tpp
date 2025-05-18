@@ -128,7 +128,7 @@ void List<Data>::RemoveFromFront() {
   if (size == 0) throw std::length_error("List is empty");
   Node* tmp = head;
   head = head->next;
-  tmp->next = nullptr;
+  tmp->next = nullptr; // per evitare la cancellazione ricorsiva
   delete tmp;
   if (--size == 0) tail = nullptr;
 }

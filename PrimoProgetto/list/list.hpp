@@ -104,13 +104,13 @@ public:
 
   // functions required by the class diagram
 
-  void InsertAtFront(const Data &); // Copy of the value
-  void InsertAtFront(Data &&); // Move of the value
+  virtual void InsertAtFront(const Data &); // Copy of the value
+  virtual void InsertAtFront(Data &&); // Move of the value
   void  RemoveFromFront(); // (must throw std::length_error when empty)
   Data FrontNRemove(); // (must throw std::length_error when empty)
 
-  void InsertAtBack(const Data &); // Copy of the value
-  void InsertAtBack(Data &&); // Move of the value
+  virtual void InsertAtBack(const Data &); // Copy of the value
+  virtual void InsertAtBack(Data &&); // Move of the value
   void RemoveFromBack(); // (must throw std::length_error when empty)
   Data BackNRemove(); // (must throw std::length_error when empty)
 
