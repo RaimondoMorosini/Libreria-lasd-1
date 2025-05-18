@@ -327,16 +327,18 @@ namespace lasd
     List<Data>::RemoveFromFront();
   }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
-  Data SetLst<Data>::Max() const
-  {
-    return List<Data>::Back();
-  }
+  template <typename Data>
+const Data& SetLst<Data>::Max() const {
+  return List<Data>::Back();
+}
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  template <typename Data>
   Data SetLst<Data>::MaxNRemove()
   {
     return List<Data>::BackNRemove();
   }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
+  template <typename Data>
   void SetLst<Data>::RemoveMax()
   {
     List<Data>::RemoveFromBack();
@@ -369,7 +371,8 @@ namespace lasd
   }
 
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
-  Data SetLst<Data>::Successor(const Data &val) const
+  template <typename Data>
+  const Data SetLst<Data>::Successor(const Data &val) const
   {
     if (size == 0)
       throw std::length_error("List is empty");
@@ -379,6 +382,7 @@ namespace lasd
     return succ->element;
   }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
+  template <typename Data>
   Data SetLst<Data>::SuccessorNRemove(const Data &val)
   {
     Data tmp = Successor(val);
@@ -386,6 +390,7 @@ namespace lasd
     return tmp;
   }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when not found)
+  template <typename Data>
   void SetLst<Data>::RemoveSuccessor(const Data &val)
   {
     Remove(Successor(val));
