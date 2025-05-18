@@ -17,11 +17,10 @@ class SetLst : public virtual Set<Data>,
                public virtual List<Data> {
 
 private:
+//funzioni ausiliarie per la ricerca di predecessor e successor
+typename List<Data>::Node* FindPredecessorNode(const Data&) const;
+typename List<Data>::Node* FindSuccessorNode(const Data&) const;
 
-  // Funzione ausiliaria per trovare il predecessore di un valore
-  Node* FindPredecessorNode(const Data&) const;
-  // Funzione ausiliaria per trovare il successore di un valore
-  Node* FindSuccessorNode(const Data&) const;
 protected:
 
   using List<Data>::Node;
