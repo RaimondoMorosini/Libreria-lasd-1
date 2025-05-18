@@ -22,7 +22,7 @@ private:
 
 protected:
 
-    using List<Data>::Node;
+  using List<Data>::Node;
   using List<Data>::head;
   using List<Data>::tail;
   using Container::size;
