@@ -328,9 +328,10 @@ namespace lasd
   }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
   template <typename Data>
-const Data& SetLst<Data>::Max() const {
-  return List<Data>::Back();
-}
+  const Data &SetLst<Data>::Max() const
+  {
+    return List<Data>::Back();
+  }
   // Override OrderedDictionaryContainer member (concrete function must throw std::length_error when empty)
   template <typename Data>
   Data SetLst<Data>::MaxNRemove()
