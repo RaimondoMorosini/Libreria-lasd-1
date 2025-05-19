@@ -136,6 +136,6 @@ protected:
 
 }
 
-#include "setvec.tpp"
+#include "setvec.cpp"
 
 #endif

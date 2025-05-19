@@ -80,6 +80,6 @@ namespace lasd
 
 } // Close namespace lasd
 
-#include "dictionary.tpp"
+#include "dictionary.cpp"
 
 #endif
