@@ -6,3 +6,5 @@ PrimoProgetto/set/vec/test
 PrimoProgetto/set/vec/test_setvec.d
 PrimoProgetto/set/vec/test_setvec
 *.txt
+PrimoProgetto/main
+*.d
