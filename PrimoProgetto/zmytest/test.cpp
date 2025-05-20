@@ -7,15 +7,7 @@
 
 void mytest()
 {
-  std::cout << "Running mytest...\n";
-  //call main
-  main();
-  std::cout << "mytest completed.\n";
-}
-int main()
-{
-
-  std::cout << "Running Vector tests...\n";
+    std::cout << "Running Vector tests...\n";
   TestVector<int>();
   TestVector<std::string>();
   TestVector<MyObject>();
@@ -38,5 +30,8 @@ int main()
   RunSetLstTests<MyObject>();
 
   std::cout << "\nAll tests passed.\n";
-  return 0;
+
+  std::cout << "Running mytest...\n";
+  std::cout << "mytest completed.\n";
 }
+
