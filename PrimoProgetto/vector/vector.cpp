@@ -56,6 +56,8 @@ Vector<Data>::Vector(Vector<Data> && vec) noexcept {
 template<typename Data>
 Vector<Data>::~Vector() {
   delete[] Elements;
+  Elements = nullptr;
+  size = 0;
 }
 
 /* ************************************************************************** */
