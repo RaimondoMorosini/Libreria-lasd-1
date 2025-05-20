@@ -1,7 +1,7 @@
 #include <iostream>
 #include "setvec.hpp"
 /*
-g++-13 -Wall -pedantic -std=c++20 -MMD -MP -O3 -fsanitize=address -o main.cpp
+g++-13 -Wall -pedantic -std=c++20 -MMD -MP -O3 -fsanitize=address main.cpp -o main
 */
 using namespace std;
 using namespace lasd;
