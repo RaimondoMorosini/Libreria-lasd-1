@@ -1,53 +1,70 @@
 #include <iostream>
-#include "../../vector/vector.hpp"
-#include "setvec.hpp"
-
+#include "setvec3.hpp"
+/*
+g++-13 -Wall -pedantic -std=c++20 -MMD -MP -O3 -fsanitize=address -o main.cpp
+*/
+using namespace std;
 using namespace lasd;
 
 int main() {
-  std::cout << "===== Creazione di un Vector<int> =====\n";
-  Vector<int> v(5);
-  for (ulong i = 0; i < 5; ++i) {
-    v[i] = i + 1; // 1, 2, 3, 4, 5
+  cout << "SetVec<int> test" << endl;
+  SetVec<int> s;
+
+  cout << "Inserting 10, 5, 20, 15..." << endl;
+  s.Insert(10);
+  s.Insert(5);
+  s.Insert(20);
+  s.Insert(15);
+
+  cout << "Elements in set (ordered): ";
+  for (ulong i = 0; i < s.Size(); ++i) {
+    cout << s[i] << " ";
   }
+  cout << endl;
 
-  std::cout << "===== Costruttore SetVec da TraversableContainer =====\n";
-  SetVec<int> set1(v);
-  std::cout << "Set1 Size: " << set1.Size() << "\n";
-  for (int i = 1; i <= 5; ++i) {
-    std::cout << "Set1.Exists(" << i << "): " << set1.Exists(i) << "\n";
+  cout << "Exists(15)? " << (s.Exists(15) ? "Yes" : "No") << endl;
+  cout << "Remove(10)" << endl;
+  s.Remove(10);
+
+  cout << "Set after removal: ";
+  for (ulong i = 0; i < s.Size(); ++i) {
+    cout << s[i] << " ";
   }
+  cout << endl;
 
-  std::cout << "\n===== Costruttore di copia =====\n";
-  SetVec<int> set2(set1);
-  std::cout << "Set2 Size: " << set2.Size() << "\n";
-  std::cout << "Set2.Exists(3): " << set2.Exists(3) << "\n";
+  cout << "Min: " << s.Min() << ", Max: " << s.Max() << endl;
 
-  std::cout << "\n===== Operatore di assegnazione (copia) =====\n";
-  SetVec<int> set3;
-  set3 = set2;
-  std::cout << "Set3 Size: " << set3.Size() << "\n";
-  std::cout << "Set3.Exists(4): " << set3.Exists(4) << "\n";
+  cout << "RemoveMin(), RemoveMax()" << endl;
+  s.RemoveMin();
+  s.RemoveMax();
 
-  std::cout << "\n===== Costruttore di move =====\n";
-  SetVec<int> set4(std::move(set2));
-  std::cout << "Set4 Size: " << set4.Size() << "\n";
-  std::cout << "Set4.Exists(5): " << set4.Exists(5) << "\n";
+  cout << "Set after Min/Max removal: ";
+  for (ulong i = 0; i < s.Size(); ++i)
+  {
+    cout << s[i] << " ";
+  }
+  cout << endl;
 
-  std::cout << "Set2 Size dopo il move: " << set2.Size() << "\n";
+  s.Insert(12);
+  s.Insert(18);
+  cout << "Inserted 12, 18" << endl;
 
-  std::cout << "\n===== Operatore di assegnazione (move) =====\n";
-  SetVec<int> set5;
-  set5 = std::move(set3);
-  std::cout << "Set5 Size: " << set5.Size() << "\n";
-  std::cout << "Set5.Exists(2): " << set5.Exists(2) << "\n";
+  cout << "Predecessor(15): " << s.Predecessor(15) << endl;
+  cout << "Successor(12): " << s.Successor(12) << endl;
 
-  std::cout << "Set3 Size dopo il move: " << set3.Size() << "\n";
+  cout << "Removing Predecessor(15)" << endl;
+  s.RemovePredecessor(15);
 
-  std::cout << "\n===== Test Insert su Set5 =====\n";
-  set5.Insert(42);
-  std::cout << "Set5.Exists(42): " << set5.Exists(42) << "\n";
-  std::cout << "Set5 Size: " << set5.Size() << "\n";
+  cout << "Set after RemovePredecessor(15): ";
+  for (ulong i = 0; i < s.Size(); ++i)
+  {
+    cout << s[i] << " ";
+  }
+  cout << endl;
+
+  cout << "Clear() set" << endl;
+  s.Clear();
+  cout << "Size after clear: " << s.Size() << endl;
 
   return 0;
 }
