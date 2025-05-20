@@ -47,6 +47,11 @@ struct MyObject {
   bool operator>=(const MyObject& other) const {
     return !(*this < other);
   }
+
+  friend std::ostream& operator<<(std::ostream& os, const MyObject& obj) {
+    os << "MyObject{id: " << obj.id << ", name: " << obj.name << "}";
+    return os;
+  }
 };
 
 
