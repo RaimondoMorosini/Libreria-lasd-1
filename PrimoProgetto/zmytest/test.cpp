@@ -1,14 +1,13 @@
+#include "util/test_utils.hpp"
+#include "list/list.hpp"
 
-// #include "..."
+int main() {
 
-/* ************************************************************************** */
+  std::cout << "\nRunning List tests...\n";
+  RunListTests<int>();
+  RunListTests<std::string>();
+  RunListTests<MyObject>();
 
-#include <iostream>
-
-using namespace std;
-
-/* ************************************************************************** */
-
-void mytest() {
-  // ...
+  std::cout << "\nAll tests passed.\n";
+  return 0;
 }

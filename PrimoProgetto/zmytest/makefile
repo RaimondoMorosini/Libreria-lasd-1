@@ -1,6 +1,6 @@
 # === Variabili principali ===
-TARGET = test_list
-SRCS = test_list.cpp
+TARGET = test
+SRCS = test.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(OBJS:.o=.d)
 

@@ -15,32 +15,22 @@ namespace lasd
   template <typename Data>
   SetLst<Data>::SetLst(const TraversableContainer<Data> &con)
   {
-    SortableVector<Data> tempVec(con); // Copia gli elementi
-    tempVec.Sort();                    // Ordina il vettore
-
-    for (ulong i = 0; i < tempVec.Size(); ++i)
-    {
-      if (i == 0 || !(tempVec[i] == tempVec[i - 1]))
-      {
-        InsertAtBack(tempVec[i]);
-      }
-    }
+    con.Traverse(
+        [this](const Data &elem)
+        {
+          Insert(elem);
+        });
   }
 
   // Costruttore da MappableContainer (rvalue)
   template <typename Data>
   SetLst<Data>::SetLst(MappableContainer<Data> &&con)
   {
-    SortableVector<Data> tempVec(std::move(con)); // Muove gli elementi
-    tempVec.Sort();                               // Ordina il vettore
-
-    for (ulong i = 0; i < tempVec.Size(); ++i)
-    {
-      if (i == 0 || !(tempVec[i] == tempVec[i - 1]))
-      {
-        InsertAtBack(std::move(tempVec[i]));
-      }
-    }
+   con.Map(
+        [this](Data &&elem)
+        {
+          Insert(std::move(elem));
+        });
   }
 
   /* ************************************************************************** */

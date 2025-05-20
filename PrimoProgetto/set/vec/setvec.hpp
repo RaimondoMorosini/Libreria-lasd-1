@@ -15,14 +15,6 @@ namespace lasd {
 template <typename Data>
 class SetVec : public virtual Set<Data>,
                public virtual ResizableContainer {
-
-private:
-
-  // Funzione ausiliaria per ottenere la capacità del vettore sottostante
-  ulong Capacity() const noexcept {
-    return vec.Size();
-  }
-
 protected:
   using Container::size;
 
