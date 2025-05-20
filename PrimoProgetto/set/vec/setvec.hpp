@@ -106,6 +106,6 @@ protected:
 
 }
 
-#include "setvec3.cpp"
+#include "setvec.cpp"
 
 #endif

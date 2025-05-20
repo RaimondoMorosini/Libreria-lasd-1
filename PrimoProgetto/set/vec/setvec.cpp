@@ -347,7 +347,7 @@ void SetVec<Data>::RemoveMax() {
 template<typename Data>
 const Data& SetVec<Data>::Predecessor(const Data& dat) const {
   ulong idx = LowerBoundIndex(dat);
-  if (idx == 0 && (*this)[0]>=dat ) throw std::length_error("No predecessor found.");
+  if (idx == 0) throw std::length_error("No predecessor found.");
   return Elements[RealIndex(idx - 1)];
 }
 
