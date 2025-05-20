@@ -33,7 +33,7 @@ SetVec<Data>::SetVec(const SetVec<Data>& other) : Vector<Data>(other.capacity) {
   head = 0;
   size = other.size;
   for (ulong i = 0; i < size; ++i) {
-    Elements[i] = other.Elements[other.RealIndex(i)];
+    Elements[i] = other.[i];
   }
 }
 
@@ -122,23 +122,23 @@ bool SetVec<Data>::Insert(const Data& dat) {
   }
 
   if (size == capacity) {
-    Resize(capacity * 2);
+    Resize(size * 2);
   }
 
   ulong idx = LowerBoundIndex(dat);
 
-  if (idx < size / 2) {
+  if (idx < numeroDiElementi / 2) {
     // Shift elements left and move head
-    head = (head == 0) ? (capacity - 1) : (head - 1);
+    head = (head == 0) ? (size - 1) : (head - 1);
     ShiftLeft(0, idx - 1); // shift from [0, idx-1] to [1, idx]
     Elements[RealIndex(idx)] = dat;
   } else {
     // Shift elements right from idx to size-1
-    ShiftRight(idx, size); // shift [idx, size-1] to [idx+1, size]
+    ShiftRight(idx, numeroDiElementi); // shift [idx, size-1] to [idx+1, size]
     Elements[RealIndex(idx)] = dat;
   }
 
-  ++size;
+  ++numeroDiElementi;
   return true;
 }
 

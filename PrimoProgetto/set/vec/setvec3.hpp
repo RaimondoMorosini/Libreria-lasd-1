@@ -18,25 +18,23 @@ class SetVec : public Set<Data>, protected Vector<Data> {
 private:
 
   using Vector<Data>::Elements;
+  using Vector<Data>::size; // ATTENZIONE: questo rappresenta la CAPACITÀ
 
-  ulong head = 0;     // Indice dell’inizio del buffer circolare
-  ulong size = 0;     // Numero di elementi effettivamente contenuti
-  ulong& capacity = this->Vector<Data>::size; // Capacità del buffer circolare
+  ulong head = 0;
+  ulong numeroDiElementi = 0; // Numero di elementi effettivamente presenti
 
 protected:
+
+  ulong RealIndex(ulong) const; // Converte un indice logico in fisico
 
 public:
 
   // Default constructor
   SetVec();
 
-  /* ************************************************************************ */
-
   // Specific constructors
   SetVec(const TraversableContainer<Data>&);
   SetVec(MappableContainer<Data>&&);
-
-  /* ************************************************************************ */
 
   // Copy constructor
   SetVec(const SetVec&);
@@ -44,12 +42,8 @@ public:
   // Move constructor
   SetVec(SetVec&&) noexcept;
 
-  /* ************************************************************************ */
-
   // Destructor
   ~SetVec() = default;
-
-  /* ************************************************************************ */
 
   // Copy assignment
   SetVec& operator=(const SetVec&);
@@ -57,15 +51,16 @@ public:
   // Move assignment
   SetVec& operator=(SetVec&&) noexcept;
 
-  /* ************************************************************************ */
-
   // Comparison operators
   bool operator==(const SetVec&) const noexcept;
   inline bool operator!=(const SetVec&) const noexcept;
 
-  /* ************************************************************************ */
+  // DictionaryContainer
+  bool Insert(const Data&) override;
+  bool Insert(Data&&) override;
+  bool Remove(const Data&) override;
 
-  // OrderedDictionaryContainer member functions
+  // OrderedDictionaryContainer 
   const Data& Min() const override;
   Data MinNRemove() override;
   void RemoveMin() override;
@@ -84,45 +79,33 @@ public:
 
   /* ************************************************************************ */
 
-  // DictionaryContainer member functions
-  bool Insert(const Data&) override;
-  bool Insert(Data&&) override;
-  bool Remove(const Data&) override;
 
-  /* ************************************************************************ */
-
-  // LinearContainer member function
+  // LinearContainer
   const Data& operator[](ulong) const override;
   Data& operator[](ulong) override;
 
-  /* ************************************************************************ */
-
-  // TestableContainer member function
+  // TestableContainer
   bool Exists(const Data&) const noexcept override;
 
-  /* ************************************************************************ */
-
-  // ClearableContainer member function
+  // ClearableContainer
   void Clear() override;
+
+  // Container
+  ulong Size() const noexcept override { return numeroDiElementi; }
 
 protected:
 
-  // Auxiliary functions
+  void Resize(ulong);
+  ulong LowerBoundIndex(const Data&) const;
 
-  void Resize(ulong); // Aumenta la capacità del vettore
-
-  ulong LowerBoundIndex(const Data&) const; // Ricerca binaria ordinata
-
-  void ShiftLeft(ulong, ulong); // Shift logico a sinistra nel buffer circolare
-  void ShiftRight(ulong, ulong); // Shift logico a destra nel buffer circolare
-
-  ulong RealIndex(ulong) const; // Converte un indice logico in fisico
+  void ShiftLeft(ulong, ulong);
+  void ShiftRight(ulong, ulong);
 };
 
 /* ************************************************************************** */
 
 }
 
-#include "setvec2.cpp"
+#include "setvec3.cpp"
 
 #endif
