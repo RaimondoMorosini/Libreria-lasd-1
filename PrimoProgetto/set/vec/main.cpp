@@ -66,5 +66,7 @@ int main() {
   s.Clear();
   cout << "Size after clear: " << s.Size() << endl;
 
+  s.Empty();
+  cout << "Set is empty: " << (s.Empty() ? "Yes" : "No") << endl;
   return 0;
 }

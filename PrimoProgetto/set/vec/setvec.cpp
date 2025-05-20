@@ -6,6 +6,34 @@ namespace lasd
 
     /* ************************************************************************** */
 
+    // Default constructor
+    template <typename Data>
+    SetVec<Data>::SetVec() : Vector<Data>(2)
+    {
+        head = 0;
+        numeroDiElementi = 0;
+    }
+
+    // Exists - Checks if an element exists in the set
+    template <typename Data>
+    bool SetVec<Data>::Exists(const Data& dat) const noexcept
+    {
+        if (numeroDiElementi == 0)
+            return false;
+            
+        ulong idx = LowerBoundIndex(dat);
+        return (idx < numeroDiElementi && Elements[RealIndex(idx)] == dat);
+    }
+
+    // Clear - Resets the collection
+    template <typename Data>
+    void SetVec<Data>::Clear()
+    {
+        head = 0;
+        numeroDiElementi = 0;
+        delete[] Elements;
+    }
+
     // Copy constructor
     template <typename Data>
     SetVec<Data>::SetVec(const SetVec<Data> &other) : Vector<Data>(other.size)
