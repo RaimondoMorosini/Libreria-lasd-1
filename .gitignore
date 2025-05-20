@@ -8,3 +8,4 @@ PrimoProgetto/set/vec/test_setvec
 *.txt
 PrimoProgetto/main
 *.d
+PrimoProgetto/vector/test_vector
