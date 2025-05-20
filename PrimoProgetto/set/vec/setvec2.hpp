@@ -20,7 +20,6 @@ private:
   using Vector<Data>::Elements;
 
   ulong head = 0;     // Indice dell’inizio del buffer circolare
-  ulong tail = 0;     // Indice della fine del buffer (prossima posizione libera)
   ulong size = 0;     // Numero di elementi effettivamente contenuti
   ulong& capacity = this->Vector<Data>::size; // Capacità del buffer circolare
 

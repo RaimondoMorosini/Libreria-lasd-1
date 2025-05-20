@@ -1,369 +1,326 @@
 #include "setvec.hpp"
 #include <stdexcept>
-#include <utility>
+#include <algorithm>
 
 namespace lasd {
 
-/* Default constructor */
-template <typename Data>
-SetVec<Data>::SetVec() : Vector<Data>(10), head(0), tail(0), size(0), capacity(this->Vector<Data>::size) {}
+/* ************************************************************************** */
 
-/* Specific constructors */
-template <typename Data>
-SetVec<Data>::SetVec(const TraversableContainer<Data>& container) : Vector<Data>(container), head(0), tail(this->Vector<Data>::size), size(this->Vector<Data>::size), capacity(this->Vector<Data>::size) {}
-
-template <typename Data>
-SetVec<Data>::SetVec(MappableContainer<Data>&& container) : Vector<Data>(std::move(container)), head(0), tail(this->Vector<Data>::size), size(this->Vector<Data>::size), capacity(this->Vector<Data>::size) {}
-
-/* Copy constructor */
-template <typename Data>
-SetVec<Data>::SetVec(const SetVec<Data>& other) : Vector<Data>(other), head(other.head), tail(other.tail), size(other.size), capacity(this->Vector<Data>::size) {}
-
-/* Move constructor */
-template <typename Data>
-SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept
-    : Vector<Data>(std::move(other)), head(other.head), tail(other.tail), size(other.size), capacity(this->Vector<Data>::size) {
-  other.head = 0;
-  other.tail = 0;
-  other.size = 0;
+// Default constructor
+template<typename Data>
+SetVec<Data>::SetVec() {
+  capacity = 4;
+  Elements = new Data[capacity];
 }
 
-/* Copy assignment */
-template <typename Data>
+// Specific constructor (TraversableContainer)
+template<typename Data>
+SetVec<Data>::SetVec(const TraversableContainer<Data>& con) : SetVec() {
+  con.Traverse([this](const Data& dat) { Insert(dat); });
+}
+
+// Specific constructor (MappableContainer)
+template<typename Data>
+SetVec<Data>::SetVec(MappableContainer<Data>&& con) : SetVec() {
+  con.Map([this](Data& dat) { Insert(std::move(dat)); });
+}
+
+/* ************************************************************************** */
+
+// Copy constructor
+template<typename Data>
+SetVec<Data>::SetVec(const SetVec<Data>& other) : Vector<Data>(other.capacity) {
+  head = 0;
+  size = other.size;
+  for (ulong i = 0; i < size; ++i) {
+    Elements[i] = other.Elements[other.RealIndex(i)];
+  }
+}
+
+// Move constructor
+template<typename Data>
+SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept : Vector<Data>(std::move(other)) {
+  std::swap(head, other.head);
+  std::swap(size, other.size);
+}
+
+/* ************************************************************************** */
+
+// Copy assignment
+template<typename Data>
 SetVec<Data>& SetVec<Data>::operator=(const SetVec<Data>& other) {
-  if (this != &other) {
-    Vector<Data>::operator=(other);
-    head = other.head;
-    tail = other.tail;
-    size = other.size;
-    // capacity è alias, aggiornata automaticamente
-  }
+  SetVec<Data>* tmp = new SetVec<Data>(other);
+  std::swap(*tmp, *this);
+  delete tmp;
   return *this;
 }
 
-/* Move assignment */
-template <typename Data>
+// Move assignment
+template<typename Data>
 SetVec<Data>& SetVec<Data>::operator=(SetVec<Data>&& other) noexcept {
-  if (this != &other) {
-    Vector<Data>::operator=(std::move(other));
-    head = other.head;
-    tail = other.tail;
-    size = other.size;
-
-    other.head = 0;
-    other.tail = 0;
-    other.size = 0;
-  }
+  Vector<Data>::operator=(std::move(other));
+  std::swap(head, other.head);
+  std::swap(size, other.size);
   return *this;
 }
 
-/* Comparison operators */
-template <typename Data>
-bool SetVec<Data>::operator==(const SetVec<Data>& other) const noexcept {
-  if (size != other.size)
-    return false;
+/* ************************************************************************** */
 
-  for (ulong i = 0; i < size; i++) {
-    if ((*this)[i] != other[i])
+// Comparison operators
+template<typename Data>
+bool SetVec<Data>::operator==(const SetVec<Data>& other) const noexcept {
+  if (size != other.size) return false;
+  for (ulong i = 0; i < size; ++i) {
+    if (Elements[RealIndex(i)] != other.Elements[other.RealIndex(i)])
       return false;
   }
   return true;
 }
 
-template <typename Data>
-bool SetVec<Data>::operator!=(const SetVec<Data>& other) const noexcept {
+template<typename Data>
+inline bool SetVec<Data>::operator!=(const SetVec<Data>& other) const noexcept {
   return !(*this == other);
 }
 
-/* Access operators */
-template <typename Data>
+/* ************************************************************************** */
+
+// Access operator
+template<typename Data>
 const Data& SetVec<Data>::operator[](ulong index) const {
-  if (index >= size || index < 0)
-    throw std::out_of_range("SetVec::operator[] const out_of_range");
-  return Elements[RealIndex(index)];
+  if (index < size) {
+    return Elements[RealIndex(index)];
+  } else {
+    throw std::out_of_range("Access at index " + std::to_string(index) + "; set size " + std::to_string(size) + ".");
+  }
 }
 
-template <typename Data>
+template<typename Data>
 Data& SetVec<Data>::operator[](ulong index) {
-  if (index >= size || index < 0)
-    throw std::out_of_range("SetVec::operator[] out_of_range");
-  return Elements[RealIndex(index)];
+  if (index < size) {
+    return Elements[RealIndex(index)];
+  } else {
+    throw std::out_of_range("Access at index " + std::to_string(index) + "; set size " + std::to_string(size) + ".");
+  }
 }
 
-/* Exists */
-template <typename Data>
-bool SetVec<Data>::Exists(const Data& val) const noexcept {
-  ulong pos = LowerBoundIndex(val);
-  return (pos < size && (*this)[pos] == val);
-}
+/* ************************************************************************** */
 
-/* Clear */
-template <typename Data>
+// Clear
+template<typename Data>
 void SetVec<Data>::Clear() {
-  head = 0;
-  tail = 0;
   size = 0;
-  Vector<Data>::Clear();
-}
-
-/* Resize */
-template <typename Data>
-void SetVec<Data>::Resize(ulong newCapacity) {
-  if (newCapacity <= size)
-    return;
-
-  Vector<Data>::Resize(newCapacity);
-
-  // Rearrange elements to linear order in Elements buffer
-  if (size == 0) {
-    head = 0;
-    tail = 0;
-    return;
-  }
-
-  Data* newElements = new Data[newCapacity];
-
-  for (ulong i = 0; i < size; i++) {
-    newElements[i] = std::move(Elements[RealIndex(i)]);
-  }
-
-  delete[] Elements;
-  Elements = newElements;
   head = 0;
-  tail = size;
-  capacity = newCapacity;
 }
 
-/* LowerBoundIndex - binary search */
-template <typename Data>
-ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
-  if (size == 0)
-    return 0;
+/* ************************************************************************** */
 
-  ulong left = 0;
-  ulong right = size;
+// Insert
+template<typename Data>
+bool SetVec<Data>::Insert(const Data& dat) {
+  ulong idx = LowerBoundIndex(dat);
+  if (idx < size && Elements[RealIndex(idx)] == dat) {
+    return false;
+  }
 
+  if (size == capacity) {
+    Resize(capacity * 2);
+  }
+
+  ShiftRight(idx, 1);
+  Elements[RealIndex(idx)] = dat;
+  ++size;
+  return true;
+}
+
+template<typename Data>
+bool SetVec<Data>::Insert(Data&& dat) {
+  ulong idx = LowerBoundIndex(dat);
+  if (idx < size && Elements[RealIndex(idx)] == dat) {
+    return false;
+  }
+
+  if (size == capacity) {
+    Resize(capacity * 2);
+  }
+
+  ShiftRight(idx, 1);
+  Elements[RealIndex(idx)] = std::move(dat);
+  ++size;
+  return true;
+}
+
+/* ************************************************************************** */
+
+// Remove
+template<typename Data>
+bool SetVec<Data>::Remove(const Data& dat) {
+  ulong idx = LowerBoundIndex(dat);
+  if (idx < size && Elements[RealIndex(idx)] == dat) {
+    ShiftLeft(idx + 1, 1);
+    --size;
+    return true;
+  }
+  return false;
+}
+
+/* ************************************************************************** */
+
+// Exists
+template<typename Data>
+bool SetVec<Data>::Exists(const Data& dat) const noexcept {
+  ulong idx = LowerBoundIndex(dat);
+  return (idx < size && Elements[RealIndex(idx)] == dat);
+}
+
+/* ************************************************************************** */
+
+// Resize
+template<typename Data>
+void SetVec<Data>::Resize(ulong newcap) {
+  Data* tmp = new Data[newcap];
+  for (ulong i = 0; i < size; ++i) {
+    tmp[i] = std::move(Elements[RealIndex(i)]);
+  }
+  std::swap(Elements, tmp);
+  capacity = newcap;
+  head = 0;
+  delete[] tmp;
+}
+
+/* ************************************************************************** */
+
+// RealIndex
+template<typename Data>
+ulong SetVec<Data>::RealIndex(ulong index) const {
+  return (head + index) % capacity;
+}
+
+/* ************************************************************************** */
+
+// LowerBoundIndex (binary search)
+template<typename Data>
+ulong SetVec<Data>::LowerBoundIndex(const Data& dat) const {
+  ulong left = 0, right = size;
   while (left < right) {
-    ulong mid = left + (right - left) / 2;
-    if ((*this)[mid] < val)
+    ulong mid = (left + right) / 2;
+    if (Elements[RealIndex(mid)] < dat) {
       left = mid + 1;
-    else
+    } else {
       right = mid;
+    }
   }
   return left;
 }
 
-/* ShiftLeft */
-template <typename Data>
-void SetVec<Data>::ShiftLeft(ulong start, ulong end) {
-  if (start >= end) return;
+/* ************************************************************************** */
 
-  for (ulong i = start; i < end; i++) {
-    Elements[RealIndex(i)] = std::move(Elements[RealIndex(i + 1)]);
+// ShiftRight
+template<typename Data>
+void SetVec<Data>::ShiftRight(ulong start, ulong count) {
+  for (long i = size - 1; i >= (long)start; --i) {
+    Elements[RealIndex(i + count)] = std::move(Elements[RealIndex(i)]);
   }
-  tail = (tail + capacity - 1) % capacity;
-  --size;
 }
 
-/* ShiftRight */
-template <typename Data>
-void SetVec<Data>::ShiftRight(ulong start, ulong end) {
-  if (start >= end) return;
-
-  for (ulong i = end + 1; i > start; i--) {
-    Elements[RealIndex(i)] = std::move(Elements[RealIndex(i - 1)]);
+// ShiftLeft
+template<typename Data>
+void SetVec<Data>::ShiftLeft(ulong start, ulong count) {
+  for (ulong i = start; i < size; ++i) {
+    Elements[RealIndex(i - count)] = std::move(Elements[RealIndex(i)]);
   }
-  tail = (tail + 1) % capacity;
-  ++size;
 }
 
-/* RealIndex */
-template <typename Data>
-ulong SetVec<Data>::RealIndex(ulong logicalIndex) const {
-  return (head + logicalIndex) % capacity;
-}
+/* ************************************************************************** */
 
-/* Insert (copy) */
-template <typename Data>
-bool SetVec<Data>::Insert(const Data& val) {
-  ulong pos = LowerBoundIndex(val);
-  if (pos < size && (*this)[pos] == val)
-    return false; // already exists
-
-  if (size == capacity)
-    Resize(capacity * 2);
-
-  if (pos == size) {
-    Elements[tail] = val;
-    tail = (tail + 1) % capacity;
-    ++size;
-  }
-  else {
-    ShiftRight(pos, size - 1);
-    Elements[RealIndex(pos)] = val;
-  }
-
-  return true;
-}
-
-/* Insert (move) */
-template <typename Data>
-bool SetVec<Data>::Insert(Data&& val) {
-  ulong pos = LowerBoundIndex(val);
-  if (pos < size && (*this)[pos] == val)
-    return false; // already exists
-
-  if (size == capacity)
-    Resize(capacity * 2);
-
-  if (pos == size) {
-    Elements[tail] = std::move(val);
-    tail = (tail + 1) % capacity;
-    ++size;
-  }
-  else {
-    ShiftRight(pos, size - 1);
-    Elements[RealIndex(pos)] = std::move(val);
-  }
-
-  return true;
-}
-
-/* Remove */
-template <typename Data>
-bool SetVec<Data>::Remove(const Data& val) {
-  if (size == 0)
-    return false;
-
-  ulong pos = LowerBoundIndex(val);
-  if (pos == size || (*this)[pos] != val)
-    return false;
-
-  ShiftLeft(pos, size - 1);
-  return true;
-}
-
-/* Min */
-template <typename Data>
+// Min
+template<typename Data>
 const Data& SetVec<Data>::Min() const {
-  if (size == 0)
-    throw std::length_error("SetVec::Min on empty set");
-  return (*this)[0];
+  if (size == 0) throw std::length_error("Min from empty set.");
+  return Elements[RealIndex(0)];
 }
 
-/* MinNRemove */
-template <typename Data>
+template<typename Data>
 Data SetVec<Data>::MinNRemove() {
-  if (size == 0)
-    throw std::length_error("SetVec::MinNRemove on empty set");
-  Data minVal = std::move((*this)[0]);
+  Data tmp = Min();
   RemoveMin();
-  return minVal;
+  return tmp;
 }
 
-/* RemoveMin */
-template <typename Data>
+template<typename Data>
 void SetVec<Data>::RemoveMin() {
-  if (size == 0)
-    throw std::length_error("SetVec::RemoveMin on empty set");
-  ShiftLeft(0, size - 1);
-}
-
-/* Max */
-template <typename Data>
-const Data& SetVec<Data>::Max() const {
-  if (size == 0)
-    throw std::length_error("SetVec::Max on empty set");
-  return (*this)[size - 1];
-}
-
-/* MaxNRemove */
-template <typename Data>
-Data SetVec<Data>::MaxNRemove() {
-  if (size == 0)
-    throw std::length_error("SetVec::MaxNRemove on empty set");
-  Data maxVal = std::move((*this)[size - 1]);
-  RemoveMax();
-  return maxVal;
-}
-
-/* RemoveMax */
-template <typename Data>
-void SetVec<Data>::RemoveMax() {
-  if (size == 0)
-    throw std::length_error("SetVec::RemoveMax on empty set");
-  tail = (tail + capacity - 1) % capacity;
+  if (size == 0) throw std::length_error("RemoveMin from empty set.");
+  ++head;
   --size;
 }
 
-/* Predecessor */
-template <typename Data>
-const Data& SetVec<Data>::Predecessor(const Data& val) const {
-  if (size == 0)
-    throw std::length_error("SetVec::Predecessor on empty set");
+/* ************************************************************************** */
 
-  ulong pos = LowerBoundIndex(val);
-  if (pos == 0 || (pos == size || (*this)[pos] != val))
-    throw std::length_error("SetVec::Predecessor not found");
-
-  return (*this)[pos - 1];
+// Max
+template<typename Data>
+const Data& SetVec<Data>::Max() const {
+  if (size == 0) throw std::length_error("Max from empty set.");
+  return Elements[RealIndex(size - 1)];
 }
 
-/* PredecessorNRemove */
-template <typename Data>
-Data SetVec<Data>::PredecessorNRemove(const Data& val) {
-  const Data& pred = Predecessor(val);
-  Data predVal = std::move(pred);
-  RemovePredecessor(val);
-  return predVal;
+template<typename Data>
+Data SetVec<Data>::MaxNRemove() {
+  Data tmp = Max();
+  RemoveMax();
+  return tmp;
 }
 
-/* RemovePredecessor */
-template <typename Data>
-void SetVec<Data>::RemovePredecessor(const Data& val) {
-  if (size == 0)
-    throw std::length_error("SetVec::RemovePredecessor on empty set");
-
-  ulong pos = LowerBoundIndex(val);
-  if (pos == 0 || (pos == size || (*this)[pos] != val))
-    throw std::length_error("SetVec::RemovePredecessor not found");
-
-  ShiftLeft(pos - 1, size - 1);
+template<typename Data>
+void SetVec<Data>::RemoveMax() {
+  if (size == 0) throw std::length_error("RemoveMax from empty set.");
+  --size;
 }
 
-/* Successor */
-template <typename Data>
-const Data& SetVec<Data>::Successor(const Data& val) const {
-  if (size == 0)
-    throw std::length_error("SetVec::Successor on empty set");
+/* ************************************************************************** */
 
-  ulong pos = LowerBoundIndex(val);
-  if (pos == size || (*this)[pos] != val || pos + 1 >= size)
-    throw std::length_error("SetVec::Successor not found");
-
-  return (*this)[pos + 1];
+// Predecessor
+template<typename Data>
+const Data& SetVec<Data>::Predecessor(const Data& dat) const {
+  ulong idx = LowerBoundIndex(dat);
+  if (idx == 0) throw std::length_error("No predecessor found.");
+  return Elements[RealIndex(idx - 1)];
 }
 
-/* SuccessorNRemove */
-template <typename Data>
-Data SetVec<Data>::SuccessorNRemove(const Data& val) {
-  const Data& succ = Successor(val);
-  Data succVal = std::move(succ);
-  RemoveSuccessor(val);
-  return succVal;
+template<typename Data>
+Data SetVec<Data>::PredecessorNRemove(const Data& dat) {
+  Data tmp = Predecessor(dat);
+  Remove(tmp);
+  return tmp;
 }
 
-/* RemoveSuccessor */
-template <typename Data>
-void SetVec<Data>::RemoveSuccessor(const Data& val) {
-  if (size == 0)
-    throw std::length_error("SetVec::RemoveSuccessor on empty set");
-
-  ulong pos = LowerBoundIndex(val);
-  if (pos == size || (*this)[pos] != val || pos + 1 >= size)
-    throw std::length_error("SetVec::RemoveSuccessor not found");
-
-  ShiftLeft(pos + 1, size - 1);
+template<typename Data>
+void SetVec<Data>::RemovePredecessor(const Data& dat) {
+  Remove(Predecessor(dat));
 }
+
+/* ************************************************************************** */
+
+// Successor
+template<typename Data>
+const Data& SetVec<Data>::Successor(const Data& dat) const {
+  ulong idx = LowerBoundIndex(dat);
+  if (idx == size) throw std::length_error("No successor found.");
+  if (Elements[RealIndex(idx)] == dat) ++idx;
+  if (idx == size) throw std::length_error("No successor found.");
+  return Elements[RealIndex(idx)];
+}
+
+template<typename Data>
+Data SetVec<Data>::SuccessorNRemove(const Data& dat) {
+  Data tmp = Successor(dat);
+  Remove(tmp);
+  return tmp;
+}
+
+template<typename Data>
+void SetVec<Data>::RemoveSuccessor(const Data& dat) {
+  Remove(Successor(dat));
+}
+
+/* ************************************************************************** */
 
 } // namespace lasd
