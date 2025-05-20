@@ -1,4 +1,3 @@
-#include "setvec.hpp"
 #include <stdexcept>
 #include <algorithm>
 
@@ -9,9 +8,10 @@ namespace lasd {
 // Default constructor
 template<typename Data>
 SetVec<Data>::SetVec() {
+  head = 0;
+  size = 0;
   capacity = 4;
   Elements = new Data[capacity];
-}
 
 // Specific constructor (TraversableContainer)
 template<typename Data>
@@ -96,7 +96,7 @@ const Data& SetVec<Data>::operator[](ulong index) const {
 
 template<typename Data>
 Data& SetVec<Data>::operator[](ulong index) {
-  if (index < size) {
+  if (index < size ) {
     return Elements[RealIndex(index)];
   } else {
     throw std::out_of_range("Access at index " + std::to_string(index) + "; set size " + std::to_string(size) + ".");
@@ -117,8 +117,7 @@ void SetVec<Data>::Clear() {
 // Insert
 template<typename Data>
 bool SetVec<Data>::Insert(const Data& dat) {
-  ulong idx = LowerBoundIndex(dat);
-  if (idx < size && Elements[RealIndex(idx)] == dat) {
+  if (Exists(dat)) {
     return false;
   }
 
@@ -126,16 +125,27 @@ bool SetVec<Data>::Insert(const Data& dat) {
     Resize(capacity * 2);
   }
 
-  ShiftRight(idx, 1);
-  Elements[RealIndex(idx)] = dat;
+  ulong idx = LowerBoundIndex(dat);
+
+  if (idx < size / 2) {
+    // Shift elements left and move head
+    head = (head == 0) ? (capacity - 1) : (head - 1);
+    ShiftLeft(0, idx - 1); // shift from [0, idx-1] to [1, idx]
+    Elements[RealIndex(idx)] = dat;
+  } else {
+    // Shift elements right from idx to size-1
+    ShiftRight(idx, size); // shift [idx, size-1] to [idx+1, size]
+    Elements[RealIndex(idx)] = dat;
+  }
+
   ++size;
   return true;
 }
+
 
 template<typename Data>
 bool SetVec<Data>::Insert(Data&& dat) {
-  ulong idx = LowerBoundIndex(dat);
-  if (idx < size && Elements[RealIndex(idx)] == dat) {
+  if (Exists(dat)) {
     return false;
   }
 
@@ -143,24 +153,53 @@ bool SetVec<Data>::Insert(Data&& dat) {
     Resize(capacity * 2);
   }
 
-  ShiftRight(idx, 1);
-  Elements[RealIndex(idx)] = std::move(dat);
+  ulong idx = LowerBoundIndex(dat);
+
+  if (idx < size / 2) {
+    head = (head == 0) ? (capacity - 1) : (head - 1);
+    ShiftLeft(0, idx - 1);
+    Elements[RealIndex(idx)] = std::move(dat);
+  } else {
+    ShiftRight(idx, size);
+    Elements[RealIndex(idx)] = std::move(dat);
+  }
+
   ++size;
   return true;
 }
+
 
 /* ************************************************************************** */
 
 // Remove
 template<typename Data>
 bool SetVec<Data>::Remove(const Data& dat) {
-  ulong idx = LowerBoundIndex(dat);
-  if (idx < size && Elements[RealIndex(idx)] == dat) {
-    ShiftLeft(idx + 1, 1);
-    --size;
-    return true;
+  if (!Exists(dat)) {
+    return false;
   }
-  return false;
+
+  ulong idx = LowerBoundIndex(dat);
+
+  if (Elements[RealIndex(idx)] != dat) {
+    return false;
+  }
+
+  if (idx < size / 2) {
+    // Shift right toward head
+    ShiftRight(0, idx);
+    head = (head + 1) % capacity;
+  } else {
+    // Shift left toward tail
+    ShiftLeft(idx, size - 1);
+  }
+
+  --size;
+
+  if (capacity > 1 && size <= capacity / 4) {
+    Resize(capacity / 2);
+  }
+
+  return true;
 }
 
 /* ************************************************************************** */
@@ -214,21 +253,22 @@ ulong SetVec<Data>::LowerBoundIndex(const Data& dat) const {
 
 /* ************************************************************************** */
 
-// ShiftRight
+// Shift logic to the left: Elements[from+1] -> Elements[from], ..., Elements[to] -> Elements[to-1]
 template<typename Data>
-void SetVec<Data>::ShiftRight(ulong start, ulong count) {
-  for (long i = size - 1; i >= (long)start; --i) {
-    Elements[RealIndex(i + count)] = std::move(Elements[RealIndex(i)]);
+void SetVec<Data>::ShiftLeft(ulong from, ulong to) {
+  for (ulong i = from; i < to; ++i) {
+    Elements[RealIndex(i)] = std::move(Elements[RealIndex(i + 1)]);
   }
 }
 
-// ShiftLeft
+// Shift logic to the right: Elements[to-1] -> Elements[to], ..., Elements[from] -> Elements[from+1]
 template<typename Data>
-void SetVec<Data>::ShiftLeft(ulong start, ulong count) {
-  for (ulong i = start; i < size; ++i) {
-    Elements[RealIndex(i - count)] = std::move(Elements[RealIndex(i)]);
+void SetVec<Data>::ShiftRight(ulong from, ulong to) {
+  for (long i = to - 1; i >= (long)from; --i) {
+    Elements[RealIndex(i + 1)] = std::move(Elements[RealIndex(i)]);
   }
 }
+
 
 /* ************************************************************************** */
 
