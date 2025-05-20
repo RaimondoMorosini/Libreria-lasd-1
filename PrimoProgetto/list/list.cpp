@@ -84,7 +84,6 @@ List<Data>& List<Data>::operator=(const List& other) {
 template <typename Data>
 List<Data>& List<Data>::operator=(List&& other) noexcept {
   if (this != &other) {
-    Clear();
     std::swap(head, other.head);
     std::swap(tail, other.tail);
     std::swap(size, other.size);

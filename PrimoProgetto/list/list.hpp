@@ -25,7 +25,7 @@ protected:
     // Specific constructors
     inline Node() = default;
     inline Node(const Data& dat) : element(dat) {};
-    inline Node(Data&& dat) noexcept : element(std::move(dat)) {};
+    inline Node(Data&& dat) noexcept;
 
     /* ********************************************************************** */
 
@@ -33,9 +33,7 @@ protected:
     inline Node(const Node& nod) : element(nod.element) {};
 
     // Move constructor
-    inline Node(Node&& nod) noexcept : element(std::move(nod.element)), next(nod.next) {
-      nod.next = nullptr; // Avoid dangling pointer
-    }
+    inline Node(Node && nod) noexcept;
 
     /* ********************************************************************** */
 
@@ -195,6 +193,6 @@ protected:
 /* ************************************************************************** */
 
 }
-#include "list.tpp"
+#include "list.cpp"
 
 #endif
