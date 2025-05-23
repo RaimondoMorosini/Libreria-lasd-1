@@ -9,140 +9,133 @@
 
 /* ************************************************************************** */
 
-namespace lasd {
+namespace lasd
+{
 
-/* ************************************************************************** */
+  /* ************************************************************************** */
 
-template <typename Data>
-class Vector : virtual public ResizableContainer, virtual public MutableLinearContainer<Data> {
+  template <typename Data>
+  class Vector : virtual public ResizableContainer, virtual public MutableLinearContainer<Data>
+  {
 
-protected:
+  protected:
+    using Container::size;
 
-  using Container::size;
+    Data *Elements = nullptr;
 
-  Data * Elements = nullptr;
-
-public:
-
-  // Default constructor
-  Vector() = default;
-
-  /* ************************************************************************ */
-
-  // Specific constructors
-
-  Vector(const ulong);
-
-  Vector(const TraversableContainer<Data> &);
-  Vector(MappableContainer<Data> &&);
-
-  /* ************************************************************************ */
-
-  // Copy constructor
-  Vector(const Vector &);
-
-  // Move constructor
-  Vector(Vector &&) noexcept;
-
-  /* ************************************************************************ */
-
-  // Destructor
-  virtual ~Vector();
-
-  /* ************************************************************************ */
-
-  // Copy assignment
-  Vector & operator=(const Vector &);
-
-  // Move assignment
-  Vector & operator=(Vector &&) noexcept;
-
-  /* ************************************************************************ */
-
-  // Comparison operators
-  bool operator==(const Vector &) const noexcept;
-  inline bool operator!=(const Vector &) const noexcept;
+  public:
+    // Default constructor
+    Vector() = default;
 
     /* ************************************************************************ */
 
-  // Specific member functions (inherited from MutableLinearContainer)
+    // Specific constructors
 
-  Data & operator[](const ulong) override; //(must throw std::out_of_range when out of range)
-  Data & Front() override; //(must throw std::length_error when empty)//(must throw std::length_error when empty)
-  Data & Back() override; //(must throw std::length_error when empty)
+    Vector(const ulong);
 
+    Vector(const TraversableContainer<Data> &);
+    Vector(MappableContainer<Data> &&);
 
     /* ************************************************************************ */
 
-  // Specific member functions (inherited from LinearContainer)
-    const Data & operator[](const ulong) const override; //(must throw std::out_of_range when out of range)
-  const Data & Front() const override; //(must throw std::length_error when empty)
-  const Data & Back() const override; //(must throw std::length_error when empty)
+    // Copy constructor
+    Vector(const Vector &);
 
-  /* ************************************************************************ */
+    // Move constructor
+    Vector(Vector &&) noexcept;
 
-  // Specific member function (inherited from ResizableContainer)
+    /* ************************************************************************ */
 
-  void Resize(const ulong) override;
+    // Destructor
+    virtual ~Vector();
 
-  /* ************************************************************************ */
+    /* ************************************************************************ */
 
-  // Specific member function (inherited from ClearableContainer)
+    // Copy assignment
+    Vector &operator=(const Vector &);
 
-  void Clear() override;
+    // Move assignment
+    Vector &operator=(Vector &&) noexcept;
 
-  
+    /* ************************************************************************ */
 
-};
+    // Comparison operators
+    bool operator==(const Vector &) const noexcept;
+    inline bool operator!=(const Vector &) const noexcept;
 
-/* ************************************************************************** */
+    /* ************************************************************************ */
 
-template <typename Data>
-class SortableVector : virtual public Vector<Data>,
-  virtual public SortableLinearContainer<Data> {
+    // Specific member functions (inherited from MutableLinearContainer)
 
-private:
+    Data &operator[](const ulong) override; //(must throw std::out_of_range when out of range)
+    Data &Front() override;                 //(must throw std::length_error when empty)//(must throw std::length_error when empty)
+    Data &Back() override;                  //(must throw std::length_error when empty)
 
-protected:
+    /* ************************************************************************ */
 
-public:
+    // Specific member functions (inherited from LinearContainer)
+    const Data &operator[](const ulong) const override; //(must throw std::out_of_range when out of range)
+    const Data &Front() const override;                 //(must throw std::length_error when empty)
+    const Data &Back() const override;                  //(must throw std::length_error when empty)
 
-  // Default constructor
-  SortableVector() = default;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Specific member function (inherited from ResizableContainer)
 
-  // Specific constructors
+    void Resize(const ulong) override;
 
-  SortableVector(const ulong);
+    /* ************************************************************************ */
 
-  SortableVector(const TraversableContainer<Data> &);
-  SortableVector(MappableContainer<Data> &&);
+    // Specific member function (inherited from ClearableContainer)
 
-  /* ************************************************************************ */
+    void Clear() override;
+  };
 
-  // Copy constructor
-  SortableVector(const SortableVector &);
+  /* ************************************************************************** */
 
-  // Move constructor
-  SortableVector(SortableVector &&) noexcept;
+  template <typename Data>
+  class SortableVector : virtual public Vector<Data>,
+                         virtual public SortableLinearContainer<Data>
+  {
 
-  /* ************************************************************************ */
+  private:
+  protected:
+  public:
+    // Default constructor
+    SortableVector() = default;
 
-  // Destructor
-  virtual ~SortableVector() = default;
+    /* ************************************************************************ */
 
-  /* ************************************************************************ */
+    // Specific constructors
 
-  // Copy assignment
-  SortableVector & operator=(const SortableVector &);
+    SortableVector(const ulong);
 
-  // Move assignment
-  SortableVector & operator=(SortableVector &&) noexcept;
+    SortableVector(const TraversableContainer<Data> &);
+    SortableVector(MappableContainer<Data> &&);
 
-};
+    /* ************************************************************************ */
 
-/* ************************************************************************** */
+    // Copy constructor
+    SortableVector(const SortableVector &);
+
+    // Move constructor
+    SortableVector(SortableVector &&) noexcept;
+
+    /* ************************************************************************ */
+
+    // Destructor
+    virtual ~SortableVector() = default;
+
+    /* ************************************************************************ */
+
+    // Copy assignment
+    SortableVector &operator=(const SortableVector &);
+
+    // Move assignment
+    SortableVector &operator=(SortableVector &&) noexcept;
+  };
+
+  /* ************************************************************************** */
 
 }
 
