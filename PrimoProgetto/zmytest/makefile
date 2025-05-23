@@ -1,6 +1,6 @@
 # === Variabili principali ===
 TARGET = test
-SRCS = test.cpp
+SRCS = test.cpp #inserire nel cpp un main() che chiama le funzioni di test
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(OBJS:.o=.d)
 
