@@ -10,8 +10,9 @@ namespace lasd {
 // Costruttore da TraversableContainer
 template <typename Data>
 SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
+
   // Initialize vector with some initial capacity
-  vec = Vector<Data>(4);  // Start with a reasonable size
+  vec = Vector<Data>(con.Size()*2);  // Start with a reasonable size
   
   con.Traverse(
     [this](const Data& elem) {
@@ -23,6 +24,9 @@ SetVec<Data>::SetVec(const TraversableContainer<Data>& con) {
 // Costruttore da MappableContainer (rvalue)
 template <typename Data>
 SetVec<Data>::SetVec(MappableContainer<Data>&& con) {
+
+    vec = Vector<Data>(con.Size()*2);  // Start with a reasonable size
+
   con.Map(
     [this](Data&& elem) {
       Insert(std::move(elem));
@@ -38,13 +42,15 @@ SetVec<Data>::SetVec(const SetVec<Data>& other)
 }
 
 
-// Move constructor 
+// Move constructor
 template <typename Data>
-SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept
-  : vec(std::move(other.vec)), head(other.head), tail(other.tail) {
-  size = other.size;
-  other.head = other.tail = other.size = 0;
+SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept {
+  std::swap(vec, other.vec);
+  std::swap(head, other.head);
+  std::swap(tail, other.tail);
+  std::swap(size, other.size);
 }
+
 
 // Copy assignment
 template <typename Data>
@@ -124,12 +130,6 @@ ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
   return low;
 }
 
-// Operator[]
-template <typename Data>
-Data& SetVec<Data>::operator[](ulong index) {
-  if (index >= size) throw std::out_of_range("Index out of bounds");
-  return vec[(head + index) % vec.Size()];
-}
 // Inserimento ordinato
 template <typename Data>
 bool SetVec<Data>::Insert(const Data& val) {
@@ -143,7 +143,7 @@ bool SetVec<Data>::Insert(const Data& val) {
   // Find insertion point
   ulong pos = LowerBoundIndex(val);
 
-  // Shift elements to make space TODO milgiorare efficenza decidento in quale direzione shiftare
+  // Shift elements to make space //TODO milgiorare efficenza decidento in quale direzione shiftare
   for (ulong i = size; i > pos; --i) {
     vec[(head + i) % vec.Size()] = std::move(vec[(head + i - 1) % vec.Size()]);
   }
@@ -156,17 +156,16 @@ bool SetVec<Data>::Insert(const Data& val) {
   return true;
 }
 
-//TODO controllare se funziona
 template <typename Data>
 bool SetVec<Data>::Insert(Data&& val) {
   if (Exists(val)) return false;
 
-  // Ensure we have space
+  // Check if resize is needed
   if (size == vec.Size()) {
     Resize(vec.Size() == 0 ? 1 : vec.Size() * 2);
   }
 
-  // Find insertion point using direct vector access
+  // Find insertion point
   ulong i = 0;
   while (i < size && vec[(head + i) % vec.Size()] < val) {
     ++i;
@@ -187,41 +186,39 @@ bool SetVec<Data>::Insert(Data&& val) {
 // Remove
 template <typename Data>
 bool SetVec<Data>::Remove(const Data& val) {
-  // Find the element's index
-  ulong i = 0;
-  bool found = false;
+  if (size == 0) return false;
 
-  // Search for the element
-  while (i < size && !found) {
-    if ((*this)[i] == val) {
-      found = true;
-    } else {
-      ++i;
-    }
+  // find the index of the element to remove
+  ulong idx = LowerBoundIndex(val);
+
+  // Check if the element exists
+  if (idx == size || (*this)[idx] != val) {
+    return false;
   }
 
-  // If element not found, return false
-  if (!found) return false;
-
-  // Shift elements left by one position
-  for (ulong j = i; j < size - 1; ++j) {
+  // Shift elements to fill the gap //TODO migliorare efficienza decidento in quale direzione shiftare
+  for (ulong j = idx; j < size - 1; ++j) {
     (*this)[j] = std::move((*this)[j + 1]);
   }
 
-  // Decrement size and update tail
   --size;
-  
-  // Special case: if the container becomes empty, reset head and tail
+
+  // Update tail
   if (size == 0) {
     head = tail = 0;
   } else {
     tail = (head + size) % vec.Size();
   }
-  
+
+  // Ridimensiona il buffer se usiamo meno del 20% della capacità
+  if (vec.Size() > 1 && size <= vec.Size() / 5) {
+    Resize(vec.Size() / 2);
+  }
+
   return true;
 }
 
-// operator[]
+// operator[] const
 template <typename Data>
 const Data& SetVec<Data>::operator[](ulong index) const {
   if (index >= size) {
@@ -229,7 +226,12 @@ const Data& SetVec<Data>::operator[](ulong index) const {
   }
   return vec[(head + index) % vec.Size()];
 }
-
+// Operator[] non-const
+template <typename Data>
+Data& SetVec<Data>::operator[](ulong index) {
+  if (index >= size) throw std::out_of_range("Index out of bounds");
+  return vec[(head + index) % vec.Size()];
+}
 
 /* ************************************************************************ */
 
@@ -241,7 +243,7 @@ bool SetVec<Data>::Exists(const Data& val) const noexcept {
   ulong index = LowerBoundIndex(val);
   
   // Check if index is valid and the element at index equals val
-  return (index < size && !(val < (*this)[index]) && !((*this)[index] < val));
+  return (index < size && (*this)[index] == val);
 }
 
 // Clear
@@ -270,23 +272,27 @@ Data SetVec<Data>::MinNRemove() {
 
 template <typename Data>
 void SetVec<Data>::RemoveMin() {
-  if (size == 0) throw std::length_error("Empty container");
-  
-  // Shift all elements one position left
-  for (ulong i = 0; i < size - 1; ++i) {
-    (*this)[i] = std::move((*this)[i + 1]);
+  if (size == 0) {
+    throw std::length_error("Empty container");
   }
-  
-  // Update size and tail
+
+  // Avanza l'indice logico di head
+  head = (head + 1) % vec.Size();
   --size;
-  
-  // Special case: if the container becomes empty, reset head and tail
+
+  // Se diventa vuoto, resetta head e tail
   if (size == 0) {
     head = tail = 0;
   } else {
     tail = (head + size) % vec.Size();
   }
+
+  // Verifica se è necessario ridurre la capacità
+  if (vec.Size() > 1 && size <= vec.Size() / 5) {
+    Resize(vec.Size() / 2);
+  }
 }
+
 
 template <typename Data>
 const Data& SetVec<Data>::Max() const {
@@ -311,6 +317,11 @@ void SetVec<Data>::RemoveMax() {
     head = tail = 0;
   } else {
     tail = (head + size) % vec.Size();
+  }
+
+  // Verifica se è necessario ridurre la capacità
+  if (vec.Size() > 1 && size <= vec.Size() / 5) {
+    Resize(vec.Size() / 2);
   }
 }
 

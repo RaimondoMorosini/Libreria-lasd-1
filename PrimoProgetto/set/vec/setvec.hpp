@@ -2,7 +2,24 @@
 #define SETVEC_HPP
 
 /* ************************************************************************** */
+/*
+  setvec.hpp - Definizione della classe SetVec
 
+  Questo header definisce la classe template `SetVec`, un contenitore che implementa
+  un set (insieme ordinato crescente, senza duplicati) utilizzando un `Vector` come struttura
+  di supporto.
+
+  Per migliorare l'efficienza del ridimensionamento automatico dello spazio allocato,
+  gli elementi sono memorizzati in un array circolare, mantenuti in ordine.
+
+  La classe fornisce metodi per inserire, rimuovere e cercare elementi, oltre a
+  operazioni su minimi, massimi, predecessori e successori. Supporta anche
+  traversamento e mappatura attraverso le interfacce ereditate.
+
+  Autore: Raimondo Morosini
+*/
+
+/* ************************************************************************** */
 #include "../set.hpp"
 #include "../../vector/vector.hpp"
 
@@ -110,7 +127,7 @@ protected:
 
   // Auxiliary functions, if necessary!
   //resize helper
-  void Resize(ulong newCap); // Resize the vector to a new capacity
+  void Resize(ulong) override ; // Resize the vector to a new capacity
 
   //Binary search helper
   ulong LowerBoundIndex(const Data& val) const; // Find the index of a value using binary search
