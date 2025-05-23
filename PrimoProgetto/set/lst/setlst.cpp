@@ -26,7 +26,7 @@ namespace lasd
   template <typename Data>
   SetLst<Data>::SetLst(MappableContainer<Data> &&con)
   {
-   con.Map(
+    con.Map(
         [this](Data &&elem)
         {
           Insert(std::move(elem));
@@ -162,7 +162,7 @@ namespace lasd
     // Se il nodo da rimuovere è il primo
     if (head->element == val)
     {
-      typename List<Data>::Node * toDelete = head;
+      typename List<Data>::Node *toDelete = head;
       head = head->next;
       toDelete->next = nullptr; // per evitare la cancellazione ricorsiva
       delete toDelete;
@@ -178,8 +178,8 @@ namespace lasd
     }
 
     // Nodo precedente e corrente per scorrere
-    typename List<Data>::Node * prev = head;
-    typename List<Data>::Node * curr = head->next;
+    typename List<Data>::Node *prev = head;
+    typename List<Data>::Node *curr = head->next;
 
     // Scorri fino a trovare il nodo da rimuovere o la fine della lista
     while (curr != nullptr && curr->element < val)
@@ -210,7 +210,7 @@ namespace lasd
   template <typename Data>
   bool SetLst<Data>::Exists(const Data &val) const noexcept
   {
-    typename List<Data>::Node * curr = head;
+    typename List<Data>::Node *curr = head;
     while (curr != nullptr)
     {
       if (curr->element == val)
@@ -341,7 +341,7 @@ namespace lasd
   {
     if (size == 0)
       throw std::length_error("List is empty");
-    typename List<Data>::Node * pred = FindPredecessorNode(val);
+    typename List<Data>::Node *pred = FindPredecessorNode(val);
     if (pred == nullptr)
       throw std::length_error("No predecessor found");
     return pred->element;
@@ -367,7 +367,7 @@ namespace lasd
   {
     if (size == 0)
       throw std::length_error("List is empty");
-    typename List<Data>::Node * succ = FindSuccessorNode(val);
+    typename List<Data>::Node *succ = FindSuccessorNode(val);
     if (succ == nullptr)
       throw std::length_error("No successor found");
     return succ->element;
