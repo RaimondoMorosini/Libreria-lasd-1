@@ -123,21 +123,19 @@ public:
 
   void Clear() override; // Override ClearableContainer member
 
+  // Specific member function (inherited from ResizableContainer)
+    void Resize(ulong) override ; // Resize the vector to a new capacity
+
+
 protected:
 
-  // Auxiliary functions, if necessary!
-  //resize helper
-  void Resize(ulong) override ; // Resize the vector to a new capacity
+  // Auxiliary functions
 
   //Binary search helper
   ulong LowerBoundIndex(const Data& val) const; // Find the index of a value using binary search
 
-  bool needResize() const noexcept; // Check if resizing is needed
-  void ResizeIfNeeded(); // Resize the vector if needed
-
-  //Shift helper
-  void ShiftLeft(ulong start, ulong end); // Shift elements to the left
-  void ShiftRight(ulong start, ulong end); // Shift elements to the right
+  //TODO inserire funzione per maggior leggibilità che converta l'indice logico in quello fisico
+  //TODO Inserire funzione che scelga in che direzzione shiftare gli indici quando si inserisce o si rimuove un elemento
 
 };
 

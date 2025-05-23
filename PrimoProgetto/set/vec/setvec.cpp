@@ -1,5 +1,5 @@
-#ifndef SETVEC_TPP
-#define SETVEC_TPP
+#ifndef SETVEC_CPP
+#define SETVEC_CPP
 
 #include <stdexcept>
 #include <functional>
@@ -404,4 +404,4 @@ void SetVec<Data>::RemoveSuccessor(const Data& val) {
 
 } // namespace lasd
 
-#endif // SETVEC_TPP
+#endif // SETVEC_CPP
