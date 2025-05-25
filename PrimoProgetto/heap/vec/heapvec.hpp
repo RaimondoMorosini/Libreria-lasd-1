@@ -1,4 +1,3 @@
-
 #ifndef HEAPVEC_HPP
 #define HEAPVEC_HPP
 
@@ -14,78 +13,53 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HeapVec {
-  // Must extend Heap<Data>,
-  // Must extend Vector<Data>
+class HeapVec : virtual public Heap<Data>, public Vector<Data> {
 
 private:
 
-  // ...
+  // Auxiliary function to maintain heap property
+  void HeapifyDown(ulong); // From index downward
+  void HeapifyUp(ulong);   // From index upward
 
 protected:
 
-  // using Container::???;
-
-  // ...
+  using Vector<Data>::size;
+  using Vector<Data>::Elements;
 
 public:
 
   // Default constructor
-  // HeapVec() specifiers;
-
-  /* ************************************************************************ */
+  HeapVec() = default;
 
   // Specific constructors
-  // HeapVec(argument) specifiers; // A heap obtained from a TraversableContainer
-  // HeapVec(argument) specifiers; // A heap obtained from a MappableContainer
-
-  /* ************************************************************************ */
+  HeapVec(const TraversableContainer<Data>&);
+  HeapVec(MappableContainer<Data>&&);
 
   // Copy constructor
-  // HeapVec(argument) specifiers;
+  HeapVec(const HeapVec&);
 
   // Move constructor
-  // HeapVec(argument) specifiers;
-
-  /* ************************************************************************ */
+  HeapVec(HeapVec&&) noexcept;
 
   // Destructor
-  // ~HeapVec() specifiers;
-
-  /* ************************************************************************ */
+  ~HeapVec() = default;
 
   // Copy assignment
-  // type operator=(argument) specifiers;
+  HeapVec& operator=(const HeapVec&);
 
   // Move assignment
-  // type operator=(argument) specifiers;
-
-  /* ************************************************************************ */
+  HeapVec& operator=(HeapVec&&) noexcept;
 
   // Comparison operators
-  // type operator==(argument) specifiers;
-  // type operator!=(argument) specifiers;
+  bool operator==(const HeapVec&) const noexcept;
+  bool operator!=(const HeapVec&) const noexcept;
 
-  /* ************************************************************************ */
+  // Heap functions
+  bool IsHeap() const noexcept override;
+  void Heapify() override;
 
-  // Specific member functions (inherited from Heap)
-
-  // type IsHeap(argument) specifiers; // Override Heap member
-
-  // type Heapify(argument) specifiers; // Override Heap member
-
-  /* ************************************************************************ */
-
-  // Specific member function (inherited from SortableLinearContainer)
-
-  // type Sort(argument) specifiers; // Override SortableLinearContainer member
-
-
-
-protected:
-
-  // Auxiliary functions, if necessary!
-
+  // SortableLinearContainer function
+  void Sort() override;
 };
 
 /* ************************************************************************** */
