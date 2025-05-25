@@ -14,29 +14,19 @@ namespace lasd {
 
 template <typename Data>
 class Heap : virtual public SortableLinearContainer<Data>,  virtual public ClearableContainer {
-  // Must extend SortableLinearContainer<Data>,
-  //Must extend              ClearableContainer
-
-private:
-
-protected:
-
 public:
 
   virtual ~Heap()= default; // Destructor
-
-  /* ************************************************************************ */
 
   Heap & operator=(const Heap &) = delete; // Copy assignment of abstract types is not possible.
   Heap & operator=(Heap &&) noexcept = delete; // Move assignment of abstract types is not possible.
   /* ************************************************************************ */
 
-  // Specific member functions
+  // functions required by the class diagram
 
-  bool IsHeap() const noexcept =delete;
+  virtual bool IsHeap() const noexcept = 0; // Check if the container is a heap
 
-  void Heapify() = delete;
-
+  virtual void Heapify() = 0; // Transform the container into a heap
 };
 
 /* ************************************************************************** */
