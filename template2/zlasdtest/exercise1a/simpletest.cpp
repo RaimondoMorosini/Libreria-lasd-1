@@ -497,7 +497,7 @@ void stestVectorList(uint & testnum, uint & testerr) {
 
 void testSimpleExercise1A(uint & testnum, uint & testerr) {
   stestVector(testnum, testerr);
- // stestList(testnum, testerr);
- // stestVectorList(testnum, testerr);
+  stestList(testnum, testerr);
+  stestVectorList(testnum, testerr);
   cout << endl << "Exercise 1A (Simple Test) (Errors/Tests: " << testerr << "/" << testnum << ")" << endl;
 }

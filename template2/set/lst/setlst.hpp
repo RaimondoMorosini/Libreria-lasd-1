@@ -1,11 +1,11 @@
 
-#ifndef SETVEC_HPP
-#define SETVEC_HPP
+#ifndef SETLST_HPP
+#define SETLST_HPP
 
 /* ************************************************************************** */
 
 #include "../set.hpp"
-#include "../../vector/vector.hpp"
+#include "../../list/list.hpp"
 
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class SetVec {
+class SetLst {
   // Must extend Set<Data>,
-  //             ResizableContainer
+  // Could extend List<Data>
 
 private:
 
@@ -31,26 +31,26 @@ protected:
 public:
 
   // Default constructor
-  // SetVec() specifiers;
+  // SetLst() specifiers;
 
   /* ************************************************************************ */
 
   // Specific constructors
-  // SetVec(argument) specifiers; // A set obtained from a TraversableContainer
-  // SetVec(argument) specifiers; // A set obtained from a MappableContainer
+  // SetLst(argument) specifiers; // A set obtained from a TraversableContainer
+  // SetLst(argument) specifiers; // A set obtained from a MappableContainer
 
   /* ************************************************************************ */
 
   // Copy constructor
-  // SetVec(argument) specifiers;
+  // SetLst(argument) specifiers;
 
   // Move constructor
-  // SetVec(argument) specifiers;
+  // SetLst(argument) specifiers;
 
   /* ************************************************************************ */
 
   // Destructor
-  // ~SetVec() specifiers;
+  // ~SetLst() specifiers;
 
   /* ************************************************************************ */
 
@@ -122,6 +122,6 @@ protected:
 
 }
 
-#include "setvec.cpp"
+#include "setlst.cpp"
 
 #endif
