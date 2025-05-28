@@ -44,8 +44,9 @@ SetVec<Data>::SetVec(const SetVec<Data>& other)
 
 // Move constructor
 template <typename Data>
-SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept {
-  std::swap(vec, other.vec);
+SetVec<Data>::SetVec(SetVec<Data>&& other) noexcept
+  : vec(std::move(other.vec))  // Usa il costruttore di move per vec
+{
   std::swap(head, other.head);
   std::swap(tail, other.tail);
   std::swap(size, other.size);
@@ -67,7 +68,7 @@ SetVec<Data>& SetVec<Data>::operator=(const SetVec<Data>& other) {
 // Move assignment
 template <typename Data>
 SetVec<Data>& SetVec<Data>::operator=(SetVec<Data>&& other) noexcept {
-  std::swap(vec, other.vec);
+  vec = std::move(other.vec);     // Chiama il move assignment di vec
   std::swap(head, other.head);
   std::swap(tail, other.tail);
   std::swap(size, other.size);

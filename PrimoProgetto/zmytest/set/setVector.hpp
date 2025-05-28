@@ -1,22 +1,22 @@
- #ifndef TEST_SETVECTOR_HPP
+#ifndef TEST_SETVECTOR_HPP
 #define TEST_SETVECTOR_HPP
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <cassert>
-#include <typeinfo>  // Necessario per typeid
-#include <random>    // Per i test con numeri casuali
+#include <typeinfo> // Necessario per typeid
+#include <random>   // Per i test con numeri casuali
 #include "../util/test_utils.hpp"
 #include "../../vector/vector.hpp"
 #include "../../set/vec/setvec.hpp"
-#include <set>       // Per std::set nei test con valori unici
-
+#include <set> // Per std::set nei test con valori unici
 
 using namespace lasd;
 
 // ===== Test suite =====
 template <typename T>
-void RunSetVecTests() {
+void RunSetVecTests()
+{
   SetVec<T> set;
 
   // Insert
@@ -153,7 +153,8 @@ void RunSetVecTests() {
     std::uniform_int_distribution<int> dist(0, 10000);
     std::set<T> uniqueValues;
 
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < 500; ++i)
+    {
       T val = MakeValue<T>(dist(gen));
       uniqueValues.insert(val);
       set.Insert(val); // Se duplicato, il set lo rifiuta (come atteso)
@@ -175,6 +176,37 @@ void RunSetVecTests() {
     ASSERT_TRUE(fromVec.Exists(MakeValue<T>(2)));
   }
 
+  {
+    // Creo due oggetti con dati diversi
+    SetVec<T> set1;
+    set1.Insert(MakeValue<T>(1));
+    set1.Insert(MakeValue<T>(2));
+        set1.Insert(MakeValue<T>(3));
+   
+    SetVec<T> set2;
+    set2.Insert(MakeValue<T>(100));
+    set2.Insert(MakeValue<T>(200));
+    //stampo size e capacity
+   std::cout << "Set2 Size: " << set2.Size() << ", Capacity: " << set2.Capacity() << "\n";
+
+
+    // Muovo set2 dentro set1 usando move assignment (swap)
+    set1 = std::move(set2);
+
+    // set1 ha ora dati di set2
+    ASSERT_EQ(set1.Size(), 2);
+    ASSERT_EQ(set1[0], MakeValue<T>(100));
+    ASSERT_EQ(set1[1], MakeValue<T>(200));
+       std::cout << "Set2 Size: " << set2.Size() << ", Capacity: " << set2.Capacity() << "\n";
+
+    // set2 ha ora i dati di set1
+        ASSERT_EQ(set2.Size(), 3);
+    ASSERT_EQ(set2[0], MakeValue<T>(1));
+    ASSERT_EQ(set2[1], MakeValue<T>(2));
+    ASSERT_EQ(set2[2], MakeValue<T>(3));
+        std::cout << "Set1 Size: " << set1.Size() << ", Capacity: " << set1.Capacity() << "\n";
+
+  }
   std::cout << "All SetVec tests passed for type: " << typeid(T).name() << "\n";
 }
 
