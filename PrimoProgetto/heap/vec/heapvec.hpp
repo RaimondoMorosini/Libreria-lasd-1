@@ -13,7 +13,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HeapVec : virtual public Heap<Data>, protected Vector<Data> {
+class HeapVec : virtual public Heap<Data>,virtual protected Vector<Data> {
 
 private:
 
