@@ -31,7 +31,7 @@ main.o: main.cpp
 test.o: zlasdtest/test.cpp zlasdtest/test.hpp
 	$(cc) $(cflags) -c zlasdtest/test.cpp -o test.o
 
-mytest.o: zmytest/test.cpp zmytest/test.hpp
+mytest.o: zmytest/test.cpp zmytest/test.hpp zmytest/list/list.hpp zmytest/set/setlist.hpp zmytest/set/setVector.hpp zmytest/util/test_utils.hpp zmytest/vector/vector.hpp
 	$(cc) $(cflags) -c zmytest/test.cpp -o mytest.o
 
 container.o: $(libcon) zlasdtest/container/container.cpp zlasdtest/container/container.hpp
