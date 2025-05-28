@@ -13,7 +13,7 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class HeapVec : virtual public Heap<Data>, public Vector<Data> {
+class HeapVec : virtual public Heap<Data>, protected Vector<Data> {
 
 private:
 
@@ -59,7 +59,7 @@ public:
   void Heapify() override;
 
   // SortableLinearContainer function
-  void Sort() override;
+void Sort() noexcept override;
 };
 
 /* ************************************************************************** */

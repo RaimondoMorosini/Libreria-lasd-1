@@ -109,7 +109,7 @@ void HeapVec<Data>::HeapifyUp(ulong i) {
 // Sorting using HeapSort
 
 template <typename Data>
-void HeapVec<Data>::Sort() {
+void HeapVec<Data>::Sort() noexcept {
   Heapify(); // Ensure max-heap
 
   for (ulong i = size - 1; i > 0; --i) {
