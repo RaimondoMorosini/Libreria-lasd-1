@@ -22,8 +22,6 @@ namespace lasd
     using Container::size;
     using Vector<Data>::Elements;
     using Vector<Data>::Resize;
-    using HeapVec<Data>::HeapifyDown;
-    using HeapVec<Data>::HeapifyUp;
 
     ulong heapSize = 0; // Size of the heap (number of elements in the heap)
 
@@ -77,7 +75,17 @@ namespace lasd
     void Change(const ulong index, const Data &dat) override; // Override PQ member (Copy of the value)
     void Change(const ulong index, Data &&dat) override;      // Override PQ member (Move of the value)
 
+    //specific member functions (inherited from Container)
+    ulong Size() const noexcept override {
+      return heapSize; // Return the current size of the heap
+    }
   protected:
+  //ausiliary function to get the current capacity of the heap
+  ulong GetCapacity() const;
+  //heapify function to maintain the heap property
+  
+
+
   };
 
   /* ************************************************************************** */
