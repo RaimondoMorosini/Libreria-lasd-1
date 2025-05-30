@@ -187,7 +187,6 @@ void RunSetVecTests()
     set2.Insert(MakeValue<T>(100));
     set2.Insert(MakeValue<T>(200));
     //stampo size e capacity
-   std::cout << "Set2 Size: " << set2.Size() << ", Capacity: " << set2.Capacity() << "\n";
 
 
     // Muovo set2 dentro set1 usando move assignment (swap)
@@ -197,14 +196,12 @@ void RunSetVecTests()
     ASSERT_EQ(set1.Size(), 2);
     ASSERT_EQ(set1[0], MakeValue<T>(100));
     ASSERT_EQ(set1[1], MakeValue<T>(200));
-       std::cout << "Set2 Size: " << set2.Size() << ", Capacity: " << set2.Capacity() << "\n";
 
     // set2 ha ora i dati di set1
         ASSERT_EQ(set2.Size(), 3);
     ASSERT_EQ(set2[0], MakeValue<T>(1));
     ASSERT_EQ(set2[1], MakeValue<T>(2));
     ASSERT_EQ(set2[2], MakeValue<T>(3));
-        std::cout << "Set1 Size: " << set1.Size() << ", Capacity: " << set1.Capacity() << "\n";
 
   }
   std::cout << "All SetVec tests passed for type: " << typeid(T).name() << "\n";
