@@ -1,6 +1,7 @@
 
 #ifndef CONTAINER_HPP
 #define CONTAINER_HPP
+
 namespace lasd {
 
 using ulong = unsigned long; // Definizione di ulong 
@@ -25,7 +26,7 @@ public:
 
   // Functions required by the class diagram
   inline virtual bool Empty() const noexcept {
-    return (size == 0);
+    return (Size() == 0);
   }
 
   inline virtual ulong Size() const noexcept {
