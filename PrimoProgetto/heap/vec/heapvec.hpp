@@ -15,16 +15,14 @@ namespace lasd {
 template <typename Data>
 class HeapVec : virtual public Heap<Data>,virtual protected Vector<Data> {
 
-private:
-
-  // Auxiliary function to maintain heap property
-  void HeapifyDown(ulong); // From index downward
-  void HeapifyUp(ulong);   // From index upward
 
 protected:
 
-  using Vector<Data>::size;
+  using Container::size;
   using Vector<Data>::Elements;
+    // Auxiliary function to maintain heap property
+  void HeapifyDown(ulong); // From index downward
+  void HeapifyUp(ulong);   // From index upward
 
 public:
 
