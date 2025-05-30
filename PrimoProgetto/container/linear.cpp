@@ -7,8 +7,8 @@ namespace lasd {
 
 template<typename Data>
 bool LinearContainer<Data>::operator==(const LinearContainer<Data> & con) const noexcept {
-  if (size == con.size) {
-    for (ulong index = 0; index < size; ++index) {
+  if (this->Size() == con.Size()) {
+    for (ulong index = 0; index < this->Size(); ++index) {
       if (operator[](index) != con.operator[](index)) {
         return false;
       }
@@ -36,7 +36,7 @@ inline const Data & LinearContainer<Data>::Front() const {
 
 template <typename Data>
 inline const Data & LinearContainer<Data>::Back() const {
-  return operator[](size - 1);
+  return operator[](this->Size() - 1);
 }
 
 
@@ -55,7 +55,7 @@ inline void LinearContainer<Data>::Traverse(TraverseFun fun) const {
 
 template<typename Data>
 inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun fun) const {
-  for (ulong index = 0; index < size; ++index) {
+  for (ulong index = 0; index < this->Size(); ++index) {
     fun(operator[](index));
   }
 }
@@ -66,7 +66,7 @@ inline void LinearContainer<Data>::PreOrderTraverse(TraverseFun fun) const {
 
 template<typename Data>
 inline void LinearContainer<Data>::PostOrderTraverse(TraverseFun fun) const {
-  ulong index = size;
+  ulong index = this->Size();
   while (index > 0) {
     fun(operator[](--index));
   }
@@ -85,7 +85,7 @@ inline Data & MutableLinearContainer<Data>::Front() {
 
 template <typename Data>
 inline Data & MutableLinearContainer<Data>::Back() {
-  return operator[](size - 1);
+  return operator[](this->Size() - 1);
 }
 
 
@@ -119,7 +119,7 @@ inline void MutableLinearContainer<Data>::Map(MapFun fun) {
 
 template<typename Data>
 inline void MutableLinearContainer<Data>::PreOrderMap(MapFun fun) {
-  for (ulong index = 0; index < size; ++index) {
+  for (ulong index = 0; index < this->Size(); ++index) {
     fun(operator[](index));
   }
 }
@@ -130,7 +130,7 @@ inline void MutableLinearContainer<Data>::PreOrderMap(MapFun fun) {
 
 template<typename Data>
 inline void MutableLinearContainer<Data>::PostOrderMap(MapFun fun) {
-  ulong index = size;
+  ulong index = this->Size();
   while (index > 0) {
     fun(operator[](--index));
   }
@@ -142,7 +142,7 @@ inline void MutableLinearContainer<Data>::PostOrderMap(MapFun fun) {
 
 template<typename Data>
 void SortableLinearContainer<Data>::Sort() noexcept {
-  QuickSort(0, size - 1);
+  QuickSort(0, this->Size() - 1);
 }
 
 template<typename Data>
