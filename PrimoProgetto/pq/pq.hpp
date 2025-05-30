@@ -13,40 +13,28 @@ namespace lasd {
 /* ************************************************************************** */
 
 template <typename Data>
-class PQ {
-  // Must extend LinearContainer<Data>,
-  //             ClearableContainer
-
-private:
-
-protected:
+class PQ : virtual public LinearContainer<Data>,
+           virtual public ClearableContainer  {
 
 public:
 
-  // Destructor
-  // ~PQ() specifiers
-
+  virtual ~PQ() = default; // Destructor
+  PQ & operator=(const PQ &) = delete; // Copy assignment of abstract types is not possible.
+  PQ & operator=(PQ &&) noexcept = delete; // Move assignment of abstract types is not possible.
   /* ************************************************************************ */
 
-  // Copy assignment
-  // type operator=(argument); // Copy assignment of abstract types is not possible.
+  // Specific required by the class diagram
 
-  // Move assignment
-  // type operator=(argument); // Move assignment of abstract types is not possible.
+  virtual const Data& Tip() const = 0; // Get the tip of the priority queue (must throw std::length_error when empty)
+  virtual void RemoveTip() = 0; // Remove the tip of the priority queue (must throw std::length_error when empty)
+  virtual Data TipNRemove() = 0; // Get the tip of the priority queue and remove it (must throw std::length_error when empty)
 
-  /* ************************************************************************ */
+  virtual bool Insert(const Data&) = 0; // Insert a value into the priority queue (copy of the value)
+  virtual bool Insert(Data&&) = 0; // Insert a value into the priority queue (move of the value)
 
-  // Specific member functions
 
-  // type Tip(argument) specifiers; // (concrete function must throw std::length_error when empty)
-  // type RemoveTip(argument) specifiers; // (concrete function must throw std::length_error when empty)
-  // type TipNRemove(argument) specifiers; // (concrete function must throw std::length_error when empty)
-
-  // type Insert(argument) specifiers; // Copy of the value
-  // type Insert(argument) specifiers; // Move of the value
-
-  // type Change(argument) specifiers; // Copy of the value
-  // type Change(argument) specifiers; // Copy of the value
+  virtual void Change(const ulong, const Data&) = 0; // Change the tip of the priority queue (copy of the value)
+  virtual void Change(const ulong, Data&&) = 0; // Change the tip of the priority queue (move of the value)
 
 };
 
