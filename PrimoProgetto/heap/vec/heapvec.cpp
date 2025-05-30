@@ -53,21 +53,21 @@ bool HeapVec<Data>::operator!=(const HeapVec<Data>& other) const noexcept {
 
 template <typename Data>
 void HeapVec<Data>::Heapify() {
-  if (size > 1) {
-    for (long i = (size / 2) - 1; i >= 0; --i)
+  if (this->Size() > 1) {
+    for (long i = (this->Size() / 2) - 1; i >= 0; --i)
       HeapifyDown(i);
   }
 }
 
 template <typename Data>
 bool HeapVec<Data>::IsHeap() const noexcept {
-  for (ulong i = 0; i < size / 2; ++i) {
+  for (ulong i = 0; i < this->Size() / 2; ++i) {
     ulong left = 2 * i + 1;
     ulong right = 2 * i + 2;
 
-    if (left < size && Elements[i] < Elements[left])
+    if (left < this->Size() && Elements[i] < Elements[left])
       return false;
-    if (right < size && Elements[i] < Elements[right])
+    if (right < this->Size() && Elements[i] < Elements[right])
       return false;
   }
   return true;
@@ -79,10 +79,10 @@ void HeapVec<Data>::HeapifyDown(ulong i) {
   ulong left = 2 * i + 1;
   ulong right = 2 * i + 2;
 
-  if (left < size && Elements[left] > Elements[largest])
+  if (left < this->Size() && Elements[left] > Elements[largest])
     largest = left;
 
-  if (right < size && Elements[right] > Elements[largest])
+  if (right < this->Size() && Elements[right] > Elements[largest])
     largest = right;
 
   if (largest != i) {
@@ -112,7 +112,7 @@ template <typename Data>
 void HeapVec<Data>::Sort() noexcept {
   Heapify(); // Ensure max-heap
 
-  for (ulong i = size - 1; i > 0; --i) {
+  for (ulong i = this->Size() - 1; i > 0; --i) {
     std::swap(Elements[0], Elements[i]);
     ulong tempSize = i;
     ulong root = 0;
