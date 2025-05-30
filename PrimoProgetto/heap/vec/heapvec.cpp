@@ -1,3 +1,4 @@
+#include <iostream>
 namespace lasd {
 
 /* ************************************************************************** */
@@ -16,11 +17,19 @@ HeapVec<Data>::HeapVec(MappableContainer<Data>&& container) : Vector<Data>(std::
 
 // Copy constructor
 template <typename Data>
-HeapVec<Data>::HeapVec(const HeapVec<Data>& other) : Vector<Data>(other) {}
+HeapVec<Data>::HeapVec(const HeapVec<Data>& other){
+  Vector<Data>::operator=(other);
+  std::cout << "HeapVec copy constructor called" << std::endl;
+  // No need to call Heapify here, as the copied vector is already a heap
+}
 
 // Move constructor
 template <typename Data>
-HeapVec<Data>::HeapVec(HeapVec<Data>&& other) noexcept : Vector<Data>(std::move(other)) {}
+HeapVec<Data>::HeapVec(HeapVec<Data>&& other) noexcept {
+  //esplicitly call the base class move constructor
+  Vector<Data>::operator=(std::move(other));
+  std::cout<< "HeapVec move constructor called" << std::endl;
+}
 
 // Copy assignment
 template <typename Data>

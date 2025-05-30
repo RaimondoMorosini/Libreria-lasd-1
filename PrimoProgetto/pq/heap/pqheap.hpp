@@ -6,6 +6,8 @@
 
 #include "../pq.hpp"
 #include "../../heap/vec/heapvec.hpp"
+//include iostream for debugging purposes
+#include <iostream>
 
 /* ************************************************************************** */
 
@@ -16,14 +18,15 @@ namespace lasd
 
   template <typename Data>
   class PQHeap : virtual public PQ<Data>,
-                 virtual protected HeapVec<Data>
+                  virtual protected HeapVec<Data>
   {
   protected:
     using Container::size;
     using Vector<Data>::Elements;
     using Vector<Data>::Resize;
+    using HeapVec<Data>::HeapifyDown;
+    using HeapVec<Data>::HeapifyUp;
 
-    ulong heapSize = 0; // Size of the heap (number of elements in the heap)
 
   public:
     PQHeap() = default; // Default constructor
@@ -31,27 +34,15 @@ namespace lasd
     /* ************************************************************************ */
 
     // Specific constructors
+PQHeap(const TraversableContainer<Data>&); // da TraversableContainer
+PQHeap(MappableContainer<Data>&&);         // da MappableContainer (move)
 
-    // PQHeap(argument) specifiers; // A priority queue obtained from a TraversableContainer
-    PQHeap(const TraversableContainer<Data> &con) : HeapVec<Data>(con) {
-      heapSize = con.Size(); // Initialize heap size from the container size
-    }
-    // PQHeap(argument) specifiers; // A priority queue obtained from a MappableContainer
-    PQHeap(MappableContainer<Data> &&con) : HeapVec<Data>(std::move(con)) {
-      heapSize = con.Size(); // Initialize heap size from the container size
-    }
-    /* ************************************************************************ */
 
-    // Copy constructor
-    PQHeap(const PQHeap<Data> &other) : HeapVec<Data>(other) {
-      heapSize = other.heapSize; // Copy the heap size
-     }
+//copy constructor
+PQHeap(const PQHeap<Data>&);
 
-    // Move constructor
-    PQHeap(PQHeap<Data> &&other) noexcept : HeapVec<Data>(std::move(other)) {
-      std::swap(heapSize, other.heapSize); // Move the heap size
-    }
-    /* ************************************************************************ */
+//move constructor
+PQHeap(PQHeap<Data>&&) noexcept;
 
     ~PQHeap() = default; // Destructor
 
@@ -75,15 +66,12 @@ namespace lasd
     void Change(const ulong index, const Data &dat) override; // Override PQ member (Copy of the value)
     void Change(const ulong index, Data &&dat) override;      // Override PQ member (Move of the value)
 
-    //specific member functions (inherited from Container)
-    ulong Size() const noexcept override {
-      return heapSize; // Return the current size of the heap
-    }
+    /* ************************************************************************ */
+    // Specific member functions (inherited from Container)
+
+   
+
   protected:
-  //ausiliary function to get the current capacity of the heap
-  ulong GetCapacity() const;
-  //heapify function to maintain the heap property
-  
 
 
   };
