@@ -74,4 +74,34 @@ MyObject MakeValue<MyObject>(int i) {
   return MyObject{i, "obj_" + std::to_string(i)};
 }
 
+
+//funzioni che creano un oggetto di tipo T da un container 
+template <template <typename> class C, typename T, typename Traversable>
+C<T> MakeFromContainer(const Traversable& source) {
+    return C<T>(source); // Usa il costruttore const Traversable&
+}
+
+template <template <typename> class C, typename T, typename Mappable>
+C<T> MakeFromContainer(Mappable&& source) {
+    return C<T>(std::move(source)); // Usa il costruttore Mappable&&
+}
+
+// ===================
+//funzione che crea un oggetto di tipo T da un container usando il costruttore di copia ed poi applica la funzione testFn
+template <template <typename> class C, typename T, typename Traversable, typename TestFunc>
+void TestConstructionCopy(const Traversable& source, TestFunc testFn) {
+    C<T> container(source); // Costruttore per copia
+    testFn(container);      // Applica i test
+}
+
+//funzione che crea un oggetto di tipo T da un container usando il costruttore di move ed poi applica la funzione testFn
+template <template <typename> class C, typename T, typename Mappable, typename TestFunc>
+void TestConstructionMove(Mappable&& source, TestFunc testFn) {
+    C<T> container(std::move(source)); // Costruttore per move
+    testFn(container);                 // Applica i test
+}
+
+
+
+
 #endif // TEST_UTILS_HPP
