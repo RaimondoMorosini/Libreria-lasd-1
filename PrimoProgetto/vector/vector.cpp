@@ -33,7 +33,8 @@ namespace lasd
     con.Map(
         [this, &index](Data &dat)
         {
-          Elements[index++] = std::move(dat);
+          //use std::swap to move the data
+          std::swap(Elements[index++], dat);
         });
   }
 
