@@ -84,6 +84,61 @@ void TestVector() {
   vec.Clear();
   ASSERT_EQ(vec.Size(), 0);
 
+  //move constructor
+  {
+    Vector<T> vec3(4);
+    for (unsigned i = 0; i < vec3.Size(); ++i) {
+      vec3[i] = MakeValue<T>(static_cast<int>(i + 1));
+    }
+    Vector<T> vec4(std::move(vec3));
+    ASSERT_EQ(vec4.Size(), 4);
+    for (unsigned i = 0; i < vec4.Size(); ++i) {
+      ASSERT_EQ(vec4[i], MakeValue<T>(static_cast<int>(i + 1)));
+    }
+    // Check that vec3 is now empty
+    ASSERT_EQ(vec3.Size(), 0);
+  }
+  // move assignment
+  {
+    Vector<T> vec5(3);
+    for (unsigned i = 0; i < vec5.Size(); ++i) {
+      vec5[i] = MakeValue<T>(static_cast<int>(i + 1));
+    }
+    Vector<T> vec6;
+    vec6 = std::move(vec5);
+    ASSERT_EQ(vec6.Size(), 3);
+    for (unsigned i = 0; i < vec6.Size(); ++i) {
+      ASSERT_EQ(vec6[i], MakeValue<T>(static_cast<int>(i + 1)));
+    }
+    // Check that vec5 is now empty
+    ASSERT_EQ(vec5.Size(), 0);
+  }
+  //move assigment with different size
+  {
+    Vector<T> vec7(3);
+    for (unsigned i = 0; i < vec7.Size(); ++i) {
+      vec7[i] = MakeValue<T>(static_cast<int>(i + 1));
+    }
+    Vector<T> vec8(4);
+    for (unsigned i = 0; i < vec8.Size(); ++i) {
+      vec8[i] = MakeValue<T>(static_cast<int>(i + 4));
+    }
+    vec8 = std::move(vec7);
+    ASSERT_EQ(vec8.Size(), 3);
+    for (unsigned i = 0; i < vec8.Size(); ++i) {
+      ASSERT_EQ(vec8[i], MakeValue<T>(static_cast<int>(i + 1)));
+    }
+    // Check that vec7 has the elements of vec8
+    ASSERT_EQ(vec7.Size(), 4);
+    for (unsigned i = 0; i < vec7.Size(); ++i) {
+      ASSERT_EQ(vec7[i], MakeValue<T>(static_cast<int>(i + 4)));
+    }
+
+
+  }
+
+
+
   cout << "All tests passed for Vector<" << typeid(T).name() << ">." << endl;
 }
 
