@@ -137,6 +137,25 @@ void TestVector() {
 
   }
 
+  // create a vector with default constructor
+  {
+    std::cout << "Testing default constructor..." << std::endl;
+    Vector<T> vecDefault;
+    ASSERT_EQ(vecDefault.Size(), 0); // should be empty
+    // check that accessing front or back throws exception
+    ASSERT_THROW(vecDefault.Front(), std::length_error);
+    ASSERT_THROW(vecDefault.Back(), std::length_error);
+  }
+
+  // create a vector with empty vector constructor
+  {
+    std::cout << "Testing empty vector constructor..." << std::endl;
+    Vector<T> vecEmpty(0);
+    ASSERT_EQ(vecEmpty.Size(), 0); // should be empty
+    // Check that accessing front or back throws exception
+    ASSERT_THROW(vecEmpty.Front(), std::length_error);
+    ASSERT_THROW(vecEmpty.Back(), std::length_error);  
+  }
 
 
   cout << "All tests passed for Vector<" << typeid(T).name() << ">." << endl;
