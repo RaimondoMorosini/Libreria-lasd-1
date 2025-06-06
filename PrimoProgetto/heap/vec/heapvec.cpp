@@ -11,13 +11,16 @@ HeapVec<Data>::HeapVec(const TraversableContainer<Data>& container) : Vector<Dat
 }
 
 template <typename Data>
-HeapVec<Data>::HeapVec(MappableContainer<Data>&& container) : Vector<Data>(std::move(container)) {
+HeapVec<Data>::HeapVec(MappableContainer<Data>&& container) {
+  Vector<Data>::operator=(std::move(container));
   Heapify();
+  //check contaiener is empty
 }
 
 // Copy constructor
 template <typename Data>
-HeapVec<Data>::HeapVec(const HeapVec<Data>& other){
+HeapVec<Data>::HeapVec(const HeapVec<Data>& other)// : Vector<Data>(other)
+{
   Vector<Data>::operator=(other);
   std::cout << "HeapVec copy constructor called" << std::endl;
   // No need to call Heapify here, as the copied vector is already a heap
