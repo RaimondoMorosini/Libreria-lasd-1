@@ -3,6 +3,8 @@
 #include "vector/vector.hpp"
 #include "set/setlist.hpp"
 #include "set/setVector.hpp"
+#include "heap/heapVector.hpp"
+#include "pq/pqHeap.hpp"
 #include "test.hpp"
 
 void mytest()
@@ -28,6 +30,18 @@ void mytest()
   RunSetLstTests<int>();
   RunSetLstTests<std::string>();
   RunSetLstTests<MyObject>();
+
+  std::cout << "\nRunning HeapVec tests...\n";
+  TestHeapVec<int>();
+    TestHeapVec<std::string>();
+    TestHeapVec<MyObject>();
+  
+  std::cout << "\nRunning PQHeap tests...\n";
+  TestPQHeap<int>();
+  TestPQHeap<std::string>();
+  TestPQHeap<MyObject>();
+
+
 
   std::cout << "\nAll tests passed.\n";
 
