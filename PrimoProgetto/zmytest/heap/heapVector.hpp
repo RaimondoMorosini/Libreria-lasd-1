@@ -23,6 +23,13 @@ void TestHeapVec() {
     emptyHeap.Traverse([&](const T &v) { elems.push_back(v); });
     ASSERT_EQ(elems.size(), 0);
   }
+  //1.1 Costruiamo un heap con un Vector<T> vuoto
+  {
+    Vector<T> emptyVec;
+    HeapVec<T> heapFromEmpty(emptyVec);
+    ASSERT_TRUE(heapFromEmpty.IsHeap());
+    ASSERT_EQ(heapFromEmpty.Size(), 0);
+  }
 
   // 2. Costruttore da TraversableContainer (Vector<T>)
   {
@@ -354,6 +361,8 @@ void TestHeapVec() {
 }
 
   }
+
+
 
   std::cout << "All tests passed for HeapVec<" << typeid(T).name() << ">.\n";
 }
