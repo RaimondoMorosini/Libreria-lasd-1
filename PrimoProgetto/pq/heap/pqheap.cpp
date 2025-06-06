@@ -5,7 +5,7 @@ namespace lasd {
 
 /* ************************************************************************** */
 
-// Costruttore da TraversableContainer (copia)
+// Specific constructors
 template <typename Data>
 PQHeap<Data>::PQHeap(const TraversableContainer<Data>& con) {
   HeapVec<Data>::operator=(HeapVec<Data>(con));  // Forza l'invocazione corretta
@@ -16,13 +16,13 @@ PQHeap<Data>::PQHeap(MappableContainer<Data>&& con) {
   HeapVec<Data>::operator=(HeapVec<Data>(std::move(con)));  // Forza l'invocazione corretta
 }
 
-// Costruttore di copia
+// copy constructor
 template <typename Data>
 PQHeap<Data>::PQHeap(const PQHeap<Data>& other) : HeapVec<Data>(other) {
   // Copy costruisce già correttamente
 }
 
-// Costruttore di move
+// move constructor
 template <typename Data>
 PQHeap<Data>::PQHeap(PQHeap<Data>&& other) noexcept : HeapVec<Data>(std::move(other)) {
   // Move costruisce già correttamente
@@ -59,7 +59,7 @@ const Data& PQHeap<Data>::Tip() const {
 // RemoveTip (remove root of heap)
 template <typename Data>
 void PQHeap<Data>::RemoveTip() {
-  if (size == 0) throw std::length_error("Heap vuoto");
+  if (size == 0) throw std::length_error("Heap is empty");
   std::swap(Elements[0], Elements[size - 1]);
   Resize(size - 1);  // elimina l'ultimo
   if (size > 0)
