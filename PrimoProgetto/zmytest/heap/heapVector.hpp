@@ -177,7 +177,7 @@ void TestHeapVec() {
     heapC.Traverse([&](const T &v) { movedOut.push_back(v); });
     ASSERT_EQ(movedOut.size(), 0);
   }
-  //move assignment di un heap non vuoto
+  //7.1 move assignment di un heap non vuoto
   {
     // Vector<T> di 4 elementi: {4, 1, 6, 2}
     Vector<T> v1(4);
