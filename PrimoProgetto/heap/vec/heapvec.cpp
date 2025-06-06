@@ -8,13 +8,13 @@ namespace lasd {
 template <typename Data>
 HeapVec<Data>::HeapVec(const TraversableContainer<Data>& container) : Vector<Data>(container) {
   Heapify();
+  std::cout << "<HeapVec constructor called from TraversableContainer>" << std::endl;
 }
 
 template <typename Data>
-HeapVec<Data>::HeapVec(MappableContainer<Data>&& container) {
-  Vector<Data>::operator=(std::move(container));
+HeapVec<Data>::HeapVec(MappableContainer<Data>&& container)  : Vector<Data>(std::move(container)){
   Heapify();
-  //check contaiener is empty
+  std::cout << "<HeapVec move constructor called from MappableContainer>" << std::endl;
 }
 
 // Copy constructor
@@ -39,6 +39,7 @@ template <typename Data>
 HeapVec<Data>& HeapVec<Data>::operator=(const HeapVec<Data>& other) {
   Vector<Data>::operator=(other);
   return *this;
+  std::cout << "HeapVec copy assignment called" << std::endl;
 }
 
 // Move assignment
@@ -46,6 +47,7 @@ template <typename Data>
 HeapVec<Data>& HeapVec<Data>::operator=(HeapVec<Data>&& other) noexcept {
   Vector<Data>::operator=(std::move(other));
   return *this;
+  std::cout << "HeapVec move assignment called" << std::endl;
 }
 
 // Comparison operators
