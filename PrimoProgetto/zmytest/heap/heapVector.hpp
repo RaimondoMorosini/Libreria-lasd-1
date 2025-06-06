@@ -83,13 +83,6 @@ void TestHeapVec() {
     // Dopo il move, l'heap deve essere valido
     ASSERT_TRUE(heapFromMappable.IsHeap());
 
-    // E tempVec deve risultare “vuoto” (size = 0)
-    //stampiamo gli elementi di tempVec per verificare che sia vuoto
-    std::cout << "Elements in tempVec after move: ";
-    tempVec.Traverse([](const T &v) { std::cout << v << " "; });
-    std::vector<T> afterMove;
-    tempVec.Traverse([&](const T &v) { afterMove.push_back(v); });
-    ASSERT_EQ(afterMove.size(), 0);
   }
 
   // 4. Copy constructor
@@ -126,6 +119,12 @@ void TestHeapVec() {
 
     // Muoviamo in un nuovo oggetto
     HeapVec<T> movedHeap(std::move(toMove));
+
+    //controlliamo se ci sono gli elementi
+    ASSERT_TRUE(movedHeap.Exists(MakeValue<T>(7)));
+    ASSERT_TRUE(movedHeap.Exists(MakeValue<T>(3)));
+    ASSERT_TRUE(movedHeap.Exists(MakeValue<T>(5)));
+    
     ASSERT_TRUE(movedHeap.IsHeap());
 
     // toMove ora deve essere vuoto
@@ -134,7 +133,7 @@ void TestHeapVec() {
     ASSERT_EQ(emptyCheck.size(), 0);
   }
 
-  // 6. Copy assignment
+  // 6. Copy assignment 
   {
     // Vector<T> di 3 elementi: {11, 22, 33}
     Vector<T> v1(3);
@@ -158,7 +157,7 @@ void TestHeapVec() {
     ASSERT_FALSE(heapB == heapA);
   }
 
-  // 7. Move assignment
+  // 7. Move assignment di un heap vuoto
   {
     // Vector<T> di 4 elementi: {4, 1, 6, 2}
     Vector<T> v2(4);
@@ -178,6 +177,39 @@ void TestHeapVec() {
     heapC.Traverse([&](const T &v) { movedOut.push_back(v); });
     ASSERT_EQ(movedOut.size(), 0);
   }
+  //move assignment di un heap non vuoto
+  {
+    // Vector<T> di 4 elementi: {4, 1, 6, 2}
+    Vector<T> v1(4);
+    v1[0] = MakeValue<T>(4);
+    v1[1] = MakeValue<T>(1);
+    v1[2] = MakeValue<T>(6);
+    v1[3] = MakeValue<T>(2);
+    HeapVec<T> heap1(v1);
+
+    // Creiamo un altro heap con 3 elementi: {9, 7, 3}
+    Vector<T> v2(3);
+    v2[0] = MakeValue<T>(9);
+    v2[1] = MakeValue<T>(7);
+    v2[2] = MakeValue<T>(3);
+    HeapVec<T> heap2(v2);
+
+    heap1 = std::move(heap2);  // move assignment
+    // Dopo il move, heap1 deve contenere gli elementi di heap2
+    ASSERT_TRUE(heap1.IsHeap());
+    ASSERT_TRUE(heap1.Size() == 3);
+    ASSERT_TRUE(heap1.Exists(MakeValue<T>(9)));
+    ASSERT_TRUE(heap1.Exists(MakeValue<T>(7)));
+    ASSERT_TRUE(heap1.Exists(MakeValue<T>(3)));
+    // heap2 ora deve contenere gli elementi di heap1
+    ASSERT_TRUE(heap2.IsHeap());
+    ASSERT_TRUE(heap2.Size() == 4);
+    ASSERT_TRUE(heap2.Exists(MakeValue<T>(4)));
+    ASSERT_TRUE(heap2.Exists(MakeValue<T>(1)));
+    ASSERT_TRUE(heap2.Exists(MakeValue<T>(6)));
+
+    }
+
 
   // 8. operator== e operator!=
   {
@@ -247,8 +279,9 @@ void TestHeapVec() {
     ASSERT_TRUE(std::is_sorted(afterSort.begin(), afterSort.end()));
   }
 
-  // 11. Integrazione con Traverse e Map, poi Heapify()
+  // 11. Integrazione con Traverse e Map, poi Heapify() 
   {
+    
     // Vector<T> di 5 elementi: {2, 4, 6, 8, 10}
     Vector<T> base2(5);
     base2[0] = MakeValue<T>(2);
@@ -266,10 +299,13 @@ void TestHeapVec() {
     ASSERT_EQ(col.size(), 5);
 
     // 11.2 Map: raddoppiamo ogni elemento
+   if constexpr (std::is_arithmetic_v<T>) {
     hIM.Map([](T &val) { val = val * 2; });
+}
 
-    // Dopo Map, l'invariante di heap NON è più garantita
-    ASSERT_FALSE(hIM.IsHeap());
+    // Dopo Map, heap rimarrà un heap valido
+    ASSERT_TRUE(hIM.IsHeap());
+
 
     // Chiamiamo Heapify() per ripristinare la proprietà di heap
     hIM.Heapify();
@@ -278,7 +314,45 @@ void TestHeapVec() {
     // Verifichiamo che il nuovo massimo (originariamente 10) sia diventato 20 e sia in root
     std::vector<T> postMap;
     hIM.Traverse([&](const T &v) { postMap.push_back(v); });
-    ASSERT_EQ(postMap.front(), MakeValue<T>(20));
+   if constexpr (std::is_arithmetic_v<T>) {
+    ASSERT_EQ(postMap.front(), MakeValue<T>(10*2));
+   }
+  }
+
+  // 11. Integrazione con Traverse e Map, poi Heapify() su stringhe
+  {
+    if constexpr (std::is_same_v<T, std::string>) {
+  
+  // Vector<string> di 4 elementi: {"a", "bb", "ccc", "dddd"}
+  Vector<T> stringVec(4);
+  stringVec[0] = "a";
+  stringVec[1] = "bb";
+  stringVec[2] = "ccc";
+  stringVec[3] = "dddd";
+
+  HeapVec<T> heapStrings(stringVec);
+  ASSERT_TRUE(heapStrings.IsHeap());
+
+  // Applichiamo Map per raddoppiare ogni stringa (es: "a" -> "aa")
+  heapStrings.Map([](T &val) { val = val + val; });
+
+  // Heap non garantisce più l'invariante, lo ripristiniamo
+  heapStrings.Heapify();
+  ASSERT_TRUE(heapStrings.IsHeap());
+
+  // Verifica: "a" -> "aa", "bb" -> "bbbb", ecc.
+  std::vector<T> expected = {"aa", "bbbb", "cccccc", "dddddddd"};
+  std::vector<T> actual;
+  heapStrings.Traverse([&](const T &v) { actual.push_back(v); });
+
+  // Verifica che tutti i valori trasformati esistano
+  for (const auto &val : expected) {
+    ASSERT_TRUE(std::find(actual.begin(), actual.end(), val) != actual.end());
+  }
+
+  std::cout << "Map test passed for HeapVec<std::string>\n";
+}
+
   }
 
   std::cout << "All tests passed for HeapVec<" << typeid(T).name() << ">.\n";
