@@ -26,17 +26,15 @@ namespace lasd
         });
   }
 
-  template <typename Data>
-  Vector<Data>::Vector(MappableContainer<Data> &&con) : Vector(con.Size())
-  {
-    ulong index = 0;
-    con.Map(
-        [this, &index](Data &dat)
-        {
-          //use std::swap to move the data
-          std::swap(Elements[index++], dat);
-        });
-  }
+template <typename Data>
+Vector<Data>::Vector(MappableContainer<Data> &&con) : Vector(con.Size()) {
+  ulong index = 0;
+  con.Map(
+    [this, &index](Data & dat) {
+      Elements[index++] = std::move(dat);
+    }
+  );
+}
 
   /* ************************************************************************** */
 
