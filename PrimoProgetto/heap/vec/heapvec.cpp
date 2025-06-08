@@ -8,13 +8,11 @@ namespace lasd {
 template <typename Data>
 HeapVec<Data>::HeapVec(const TraversableContainer<Data>& container) : Vector<Data>(container) {
   Heapify();
-  std::cout << "<HeapVec constructor called from TraversableContainer>" << std::endl;
 }
 
 template <typename Data>
 HeapVec<Data>::HeapVec(MappableContainer<Data>&& container)  : Vector<Data>(std::move(container)){
   Heapify();
-  std::cout << "<HeapVec move constructor called from MappableContainer>" << std::endl;
 }
 
 // Copy constructor
@@ -22,7 +20,6 @@ template <typename Data>
 HeapVec<Data>::HeapVec(const HeapVec<Data>& other)// : Vector<Data>(other)
 {
   Vector<Data>::operator=(other);
-  std::cout << "HeapVec copy constructor called" << std::endl;
   // No need to call Heapify here, as the copied vector is already a heap
 }
 
@@ -31,7 +28,6 @@ template <typename Data>
 HeapVec<Data>::HeapVec(HeapVec<Data>&& other) noexcept {
   //esplicitly call the base class move constructor
   Vector<Data>::operator=(std::move(other));
-  std::cout<< "HeapVec move constructor called" << std::endl;
 }
 
 // Copy assignment
@@ -39,7 +35,6 @@ template <typename Data>
 HeapVec<Data>& HeapVec<Data>::operator=(const HeapVec<Data>& other) {
   Vector<Data>::operator=(other);
   return *this;
-  std::cout << "HeapVec copy assignment called" << std::endl;
 }
 
 // Move assignment
@@ -47,7 +42,6 @@ template <typename Data>
 HeapVec<Data>& HeapVec<Data>::operator=(HeapVec<Data>&& other) noexcept {
   Vector<Data>::operator=(std::move(other));
   return *this;
-  std::cout << "HeapVec move assignment called" << std::endl;
 }
 
 // Comparison operators

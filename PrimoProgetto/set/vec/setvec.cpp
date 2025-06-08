@@ -134,7 +134,8 @@ ulong SetVec<Data>::LowerBoundIndex(const Data& val) const {
 // Inserimento ordinato
 template <typename Data>
 bool SetVec<Data>::Insert(const Data& val) {
-  if (Exists(val)) return false; //TODO migliorare efficienza unendo il controllo di esistenza con la ricerca della posizione
+  if (Exists(val)) return false; // Valutare un'ottimizzazione combinando il controllo di esistenza con la ricerca della posizione, al fine di migliorare l'efficienza
+
 
   // Check if resize is needed
   if (size >= vec.Size()) {
@@ -144,7 +145,8 @@ bool SetVec<Data>::Insert(const Data& val) {
   // Find insertion point
   ulong pos = LowerBoundIndex(val);
 
-  // Shift elements to make space //TODO milgiorare efficenza decidento in quale direzione shiftare
+  // Shift elements to make space // valutare un'ottimizzazione scegliendo la direzione dello shift più efficiente
+
   for (ulong i = size; i > pos; --i) {
     vec[(head + i) % vec.Size()] = std::move(vec[(head + i - 1) % vec.Size()]);
   }
@@ -197,7 +199,7 @@ bool SetVec<Data>::Remove(const Data& val) {
     return false;
   }
 
-  // Shift elements to fill the gap //TODO migliorare efficienza decidento in quale direzione shiftare
+  // Shift elements to fill the gap // Valutare un'ottimizzazione scegliendo la direzione dello shift più efficiente
   for (ulong j = idx; j < size - 1; ++j) {
     (*this)[j] = std::move((*this)[j + 1]);
   }

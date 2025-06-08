@@ -134,8 +134,6 @@ protected:
   //Binary search helper
   ulong LowerBoundIndex(const Data& val) const; // Find the index of a value using binary search
 
-  //TODO inserire funzione per maggior leggibilità che converta l'indice logico in quello fisico
-  //TODO Inserire funzione che scelga in che direzzione shiftare gli indici quando si inserisce o si rimuove un elemento
 
 };
 

@@ -9,6 +9,7 @@
 
 void mytest()
 {
+   std::cout << "Running mytest...\n";
     std::cout << "Running Vector tests...\n";
   TestVector<int>();
   TestVector<std::string>();
@@ -44,8 +45,6 @@ void mytest()
 
 
   std::cout << "\nAll tests passed.\n";
-
-  std::cout << "Running mytest...\n";
   std::cout << "mytest completed.\n";
 }
 

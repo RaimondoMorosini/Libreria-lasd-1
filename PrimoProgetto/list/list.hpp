@@ -51,7 +51,6 @@ protected:
 
     // Specific member functions
 
-    // ...TODO CHIEDERE AD COllEGA 
 
   };
 

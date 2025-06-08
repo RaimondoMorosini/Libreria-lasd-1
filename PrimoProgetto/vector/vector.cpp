@@ -34,16 +34,6 @@ Vector<Data>::Vector(MappableContainer<Data> &&con) : Vector(con.Size()) {
       Elements[index++] = std::move(dat);
     }
   );
-  std::string a = "ciao";
-  std::cout << "a = [" << a << "]" << std::endl;  // stampa "a = [ciao]"
-std::string b="mondo";
-std::cout << "b = [" << b << "]" << std::endl;  // stampa "b = [ciao]"
-
-b = std::move(a);
-std::cout << "b = [" << b << "]" << std::endl;  // stampa "b = [ciao]"
-std::cout << "a = [" << a << "]" << std::endl;  // stampa spesso "a = []", ma non è garantito
-
-  std::cout << "<Vector move constructor called from MappableContainer>" << std::endl;
   
 }
 
