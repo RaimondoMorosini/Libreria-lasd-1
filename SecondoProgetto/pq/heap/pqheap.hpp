@@ -72,6 +72,9 @@ PQHeap(PQHeap<Data>&&) noexcept;
       HeapVec<Data>::Clear(); // Call the Clear method of the base class
     } // No need to throw exceptions, as Clear is not expected to fail
 
+      //espongo Front e Back
+ using LinearContainer<Data>::Front; // const Front()
+using LinearContainer<Data>::Back;  // const Back()
    
 
   protected:

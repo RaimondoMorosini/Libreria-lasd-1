@@ -163,6 +163,7 @@ void TestHeapVec() {
     HeapVec<T> heapB;
     heapB = heapA;  // copy assignment
 
+
     ASSERT_TRUE(heapB.IsHeap());
     ASSERT_TRUE(heapB == heapA);
 
@@ -351,6 +352,20 @@ void TestHeapVec() {
   HeapVec<T> heapStrings(stringVec);
   ASSERT_TRUE(heapStrings.IsHeap());
 
+  //stampa valore heap
+  std::cout << "Heap before Map: ";
+  heapStrings.Traverse([](const T &v) { std::cout << v << " "; });
+  std::cout << "\n";
+  //stampa in pre order
+  std::cout << "Pre-order traversal before Map: ";
+  heapStrings.PreOrderTraverse([](const T &v) { std::cout << v << " "; });
+  std::cout << "\n";
+  //stampa in post order
+  std::cout << "Post-order traversal before Map: ";
+  heapStrings.PostOrderTraverse([](const T &v) { std::cout << v << " "; });
+  std::cout << "\n";
+
+
   // Applichiamo Map per raddoppiare ogni stringa (es: "a" -> "aa")
   heapStrings.Map([](T &val) { val = val + val; });
 
@@ -361,7 +376,7 @@ void TestHeapVec() {
   // Verifica: "a" -> "aa", "bb" -> "bbbb", ecc.
   std::vector<T> expected = {"aa", "bbbb", "cccccc", "dddddddd"};
   std::vector<T> actual;
-  heapStrings.Traverse([&](const T &v) { actual.push_back(v); });
+  heapStrings.Traverse([&](const T &v) { actual.push_back(v);});
 
   // Verifica che tutti i valori trasformati esistano
   for (const auto &val : expected) {
@@ -372,6 +387,39 @@ void TestHeapVec() {
 }
 
   }
+
+  // 12. Test dei metodi Front() e Back() (const e non-const)
+  {
+    Vector<T> v(4);
+    v[0] = MakeValue<T>(1);
+    v[1] = MakeValue<T>(2);
+    v[2] = MakeValue<T>(5);
+    v[3] = MakeValue<T>(4);
+
+    HeapVec<T> h(v);
+    ASSERT_TRUE(h.IsHeap());
+
+    // Front() e Back() const
+    const HeapVec<T>& constHeap = h;
+    T frontVal = constHeap.Front();  // dovrebbe restituire il massimo
+    T backVal = constHeap.Back();    // dovrebbe restituire un elemento valido
+    //stampo i valori e stampo heap per verificare
+    std::cout << "Heap elements: ";
+    h.Traverse([](const T &v) { std::cout << v << " "; });
+    std::cout << "\nFront value: " << frontVal << ", Back value: " << backVal << "\n";
+
+    ASSERT_EQ(frontVal, MakeValue<T>(5));  // Il massimo è 20
+    ASSERT_TRUE(h.Exists(frontVal));
+    ASSERT_TRUE(h.Exists(backVal));
+
+    // Front() e Back() non-const
+    h.Front() = MakeValue<T>(99);  // modifichiamo la root
+    h.Back() = MakeValue<T>(1);    // modifichiamo l’ultimo
+
+    ASSERT_EQ(h.Front(), MakeValue<T>(99));
+    ASSERT_EQ(h.Back(), MakeValue<T>(1));
+  }
+
 
 
 

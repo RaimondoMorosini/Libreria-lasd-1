@@ -26,6 +26,13 @@ protected:
 
 public:
 
+  //espongo Front e Back
+ using LinearContainer<Data>::Front; // const Front()
+using LinearContainer<Data>::Back;  // const Back()
+
+using MutableLinearContainer<Data>::Front; // non-const Front()
+using MutableLinearContainer<Data>::Back;  // non-const Back()
+
   // Default constructor
   HeapVec() = default;
 
@@ -64,6 +71,8 @@ void Sort() noexcept override;
     Vector<Data>::Clear(); // Call the Clear method of the base class
   } // No need to throw exceptions, as Clear is not expected to fail
 };
+
+
 
 /* ************************************************************************** */
 

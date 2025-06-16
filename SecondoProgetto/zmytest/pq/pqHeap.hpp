@@ -164,6 +164,7 @@ void TestPQHeap() {
 
     std::vector<T> movedOut;
     pq1.Traverse([&](const T &v) { movedOut.push_back(v); });
+
     ASSERT_EQ(movedOut.size(), 4);
     ASSERT_EQ(pq1.Size(), 4);
   }
@@ -315,6 +316,50 @@ ASSERT_EQ(pq2.Size(), 0); // pq1 è vuoto, quindi anche pq2 deve essere vuoto
   // Copy constructor HeapVec da hv
   HeapVec<T> hv2(hv);
   ASSERT_EQ(hv2.Size(), hv.Size());
+
+
+}
+
+// 12. Clear and re-insertion
+  {
+    PQHeap<T> pq1;
+    pq1.Insert(MakeValue<T>(2));
+    pq1.Insert(MakeValue<T>(8));
+    ASSERT_EQ(pq1.Size(), 2);
+
+    pq1.Clear();
+    ASSERT_TRUE(pq1.Empty());
+
+    pq1.Insert(MakeValue<T>(1));
+    ASSERT_EQ(pq1.Tip(), MakeValue<T>(1));
+  }
+
+  // 13. Test dei metodi Front() e Back() (const)
+{
+  Vector<T> v(4);
+  v[0] = MakeValue<T>(1);
+  v[1] = MakeValue<T>(2);
+  v[2] = MakeValue<T>(5);
+  v[3] = MakeValue<T>(4);
+
+  PQHeap<T> pq1(v); // Costruzione da container
+  ASSERT_EQ(pq1.Size(), 4);
+
+  // Front() e Back() const
+  const PQHeap<T>& constPQ = pq1;
+  T frontVal = constPQ.Front(); // valore con priorità massima
+  T backVal = constPQ.Back();   // valore con priorità minima
+
+  // Stampo i valori e stampo heap per verificare
+  std::cout << "Pq elements: ";
+  pq1.Traverse([](const T &v) { std::cout << v << " "; });
+  std::cout << "\nFront value: " << frontVal << ", Back value: " << backVal << "\n";
+
+  ASSERT_EQ(frontVal, MakeValue<T>(5)); // Il massimo è 5
+  ASSERT_TRUE(pq1.Exists(frontVal));
+  ASSERT_TRUE(pq1.Exists(backVal));
+  ASSERT_EQ(frontVal, MakeValue<T>(5));
+  ASSERT_EQ(backVal, MakeValue<T>(2));
 
 
 }
