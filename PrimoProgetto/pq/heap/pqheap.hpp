@@ -67,7 +67,10 @@ PQHeap(PQHeap<Data>&&) noexcept;
     void Change(const ulong index, Data &&dat) override;      // Override PQ member (Move of the value)
 
     /* ************************************************************************ */
-    // Specific member functions (inherited from Container)
+    // Specific member functions (inherited from CleanContainer)
+    void Clear() noexcept override { // Override CleanableContainer member
+      HeapVec<Data>::Clear(); // Call the Clear method of the base class
+    } // No need to throw exceptions, as Clear is not expected to fail
 
    
 

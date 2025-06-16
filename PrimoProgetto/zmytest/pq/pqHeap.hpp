@@ -47,6 +47,9 @@ void TestPQHeap() {
     ASSERT_TRUE(pq.Exists(MakeValue<T>(6)));
     ASSERT_EQ(pq.Tip(), MakeValue<T>(7));
 
+    pq.Clear(); // Clear the priority queue
+    ASSERT_TRUE(pq.Empty());
+
 
   }
 

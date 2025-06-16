@@ -62,6 +62,17 @@ void TestHeapVec() {
     // Il massimo valore nella lista originale era raw[5] == 9
     ASSERT_EQ(collected.front(), MakeValue<T>(9));
     ASSERT_EQ(collected.size(), 8);
+
+
+    //facciamo la clear dell'heap
+    heapFromTraversable.Clear();
+    ASSERT_TRUE(heapFromTraversable.IsHeap());
+    ASSERT_EQ(heapFromTraversable.Size(), 0);
+        ASSERT_TRUE(heapFromTraversable.Empty());
+
+      
+
+    
   }
 
   // 3. Costruttore da MappableContainer (move di Vector<T>)

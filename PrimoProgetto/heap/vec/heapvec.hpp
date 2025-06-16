@@ -58,6 +58,11 @@ public:
 
   // SortableLinearContainer function
 void Sort() noexcept override;
+
+  // ClearableContainer function
+  void Clear() noexcept override { // Override ClearableContainer member
+    Vector<Data>::Clear(); // Call the Clear method of the base class
+  } // No need to throw exceptions, as Clear is not expected to fail
 };
 
 /* ************************************************************************** */
